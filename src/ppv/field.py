@@ -1,11 +1,11 @@
-import data.io
+from .data import io as data_io
 from . import plate
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 
-allplate_summary = data.io.load_plansummary()
+allplate_summary = data_io.load_plansummary()
 allplate_summary.add_index('name')  # for quick filtering on fieldname
 _names_array = allplate_summary['name'].astype('U')  # for quick checking
 

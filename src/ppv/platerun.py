@@ -1,12 +1,17 @@
 from . import util
 from . import field
-from .data import plansummary
+from .data import io as data_io
 import numpy as np
 from copy import copy
 
-_summary = plansummary.load()
-_summary.add_index('platerun')  # for quick filtering on fieldname
-_names_array = _summary['platerun'].astype('U')  # for quick checking
+allplateallplate_summary = data_io.load_plansummary()
+allplateallplate_summary.add_index('name')  # for quick filtering on fieldname
+_names_array = allplateallplate_summary['name'].astype('U')  # for quick checking
+
+
+allplate_summary = data_io.load_plansummary()
+allplate_summary.add_index('platerun')  # for quick filtering on fieldname
+_names_array = allplate_summary['platerun'].astype('U')  # for quick checking
 
 def indx_in_plateruns(run_name):
     return np.where(_names_array == run_name)[0]
@@ -22,12 +27,12 @@ class PlateRun:
 
     def _get_fields(self):
         idx = indx_in_plateruns(self.name)
-        names = _summary['name'].astype('U')[idx]
+        names = allplate_summary['name'].astype('U')[idx]
         return np.unique(names)  # no field repeats
 
     @property
     def summary(self):
-        return _summary[indx_in_plateruns(self.name)]
+        return allplate_summary[indx_in_plateruns(self.name)]
 
 
     def load_fields(self):

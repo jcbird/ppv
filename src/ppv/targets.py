@@ -8,6 +8,13 @@ from astropy import units as u
 class Targets:
     """
     Class to act as interface to target list of interest.
+
+    methods
+    =======
+
+    available: relative to its own Target class
+
+    assigned: relative to the Field
     """
 
     def __init__(self, ra, dec, catalogid=None, ancillary=None, epoch=2015.5):
@@ -82,13 +89,17 @@ class Targets:
             return self.available_in_field(instance, **report_kwds)
 
     def _assigned(self, field):
+        """
+        positional search has to happen for now because no way to directly tie targetDB in with plugHoles output (2020/09/18).
+        """
         # Here, only care about index of Targets
+
         avail_coords = self.available_in_field(field, coords=True)
         inds = np.arange(len(avail_coords), dtype=int)
         idx_assigned = []
-        for plug_coords in field.plug_coords:
+        for plug_coords in field.plugged_coords:
             idx_field, sep2d, _ = avail_coords.match_to_catalog_sky(plug_coords)
-            max_sep = 0.1 * u.arcsec
+            max_sep = 1.0 * u.arcsec  # within one arcsec
             constraint = sep2d < max_sep
             idx_assigned.append(inds[constraint])
         self._assigned_indx[field.name] = idx_assigned

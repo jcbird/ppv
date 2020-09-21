@@ -13,5 +13,6 @@ _plansummary = Path(__file__).parent / 'data/platePlans_sdss5.fits'
 
 # To be changed by user
 plate_dir = Path.home() / 'obsdata/plates'
+# five_dir = Path.home() / 'obsdata/plates'
 
 
