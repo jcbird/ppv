@@ -1,12 +1,18 @@
 from .. import platerun
 from astropy.table import vstack, unique
 from copy import copy
+import pprint
+
+
+pp = pprint.PrettyPrinter(indent=4)
+
 
 def is_platerun(obj):
     """
     returns True if object is a platerun.
     """
     return isinstance(obj, platerun.PlateRun)
+
 
 def unique_cat(lst_of_tables):
     """unique_cat.
