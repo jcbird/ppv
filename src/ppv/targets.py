@@ -54,8 +54,39 @@ class Targets:
         else:
             return self.coords
 
+    def _radial_search(self, center, radius):
+        """
+        Finds all members of Targets that are within radial cone search of
+        center.
+
+        Parameters
+        ----------
+        center : SkyCoord
+            center coordinates
+        radius : astropy quantity
+            Radius of cone search. Typically 1.49 degrees for APO
+        """
+        return self.coords.separation(center) < radius
+
+    def available(self, FieldorPlate):
+        """
+        Given a Field or Plate instance, return a boolean array of if the
+        targets are available.
+        """
+
+        indx = self._available_indx.get(FieldorPlate.name,
+                                        self._radial_search(FieldorPlate.center,
+                                                            FieldorPlate._radius)
+                                        )
+        if FieldorPlate.name not in self._available_indx:
+            self._available_indx[FieldorPlate.name] = indx
+        return indx
+
 
     def _available(self, field):
+        """
+
+        """
         # Here, only care about index of Targets
         idx_targ = np.where(self.coords.separation(field.center) <
                             field._radius)[0]

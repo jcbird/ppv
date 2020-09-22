@@ -1,8 +1,10 @@
 from .util import paths
 from . import util
 from astropy.table import Table, Column
-import astropy.units as u
+from astropy.coordinates import SkyCoord
+from astropy.time import Time
 from pydl.pydlutils.yanny import yanny
+import astropy.units as u
 import numpy as np
 
 
@@ -63,11 +65,15 @@ class Plate():
             Number of plate; e.g., 15004
         """
         self.platenum = platenum
+        self.name = platenum
         # load plugHoles parameter file
         self._plugHoles = load_yanny(platenum)
         self.targets = self._load_table()
         self.ra, self.dec = self._center()
         self._radius = 1.49 * u.degree  # assuming APO
+        self._epoch = self._get_epoch()
+        self.center = SkyCoord(self.ra * u.degree, self.dec * u.degree,
+                               obstime=Time(self._epoch, format='decimalyear'))
 
 
     def __repr__(self):
@@ -77,7 +83,7 @@ class Plate():
         return f'Plate: {self.platenum!r}; RA: {self.ra}; Dec: {self.dec}'
 
     def _center(self):
-        return self._plugHoles['raCen'], self._plugHoles['decCen']
+        return float(self._plugHoles['raCen']), float(self._plugHoles['decCen'])
 
     def __getattr__(self, attr):
         """
@@ -97,6 +103,17 @@ class Plate():
         Shows all available properties in the plugHoles parameter file.
         """
         return util.pp.pprint(list(self._plugHoles.keys()))
+
+    # TODO Ensure that the platerun string always contains the correct epoch
+
+    def _get_epoch(self):
+        """
+        Gets the epoch of the plate drilling from the epoch of the first science target.
+        As far as I know, no other way to do this from the plate par file only.
+        """
+        is_science = self.targets['targettype'] == 'science'
+        first_science_idx = np.argwhere(is_science)[0][0]
+        return self.targets[first_science_idx]['epoch']
 
     def _load_table(self):
         """
@@ -131,9 +148,9 @@ class Plate():
 
         """
         try: # already array-like
-            return np.in1d(catIDs, self.catalogid)
+            return np.in1d(catIDs, self.targets['catalogid'])
         except TypeError:
-            return np.in1d(np.array([catIDs]), self.catalogid)
+            return np.in1d(np.array([catIDs]), self.targets['catalogid'])
 
     def get_targets(self, row_indx):
         """get_rows.

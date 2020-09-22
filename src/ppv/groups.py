@@ -4,6 +4,7 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
+from astropy.table import vstack, Column
 
 allplate_summary = data_io.load_plansummary()
 allplate_summary.add_index('name')  # for quick filtering on fieldname
@@ -20,6 +21,25 @@ def plates_of_field(fieldname):  # returns a list
     return plates.tolist()
 
 
+
+def contains(self, catIDs):
+    """
+    Checks for membership in a plate based on catalogID.
+    ALL catIDs must be in plate to return True.
+
+    Parameters
+    ----------
+    catIDs : array-like
+        List of catalogIDs.
+
+    """
+    try: # already array-like
+        return np.in1d(catIDs, self.targets['catalogid'])
+    except TypeError:
+        return np.in1d(np.array([catIDs]), self.targets['catalogid'])
+
+
+
 class Field:
     """
     Class to act as interface to fields.
@@ -31,20 +51,24 @@ class Field:
         in plate_run.fieldnames
         """
         self.name = fieldname
-        self._plates = plates_of_field(self.name)
+        self._platenums = plates_of_field(self.name)
         self._summary_indx = indx_in_plateruns(self.name)
-        self.raCen, self.decCen = self._center()
-        self.center = SkyCoord(self.raCen, self.decCen,
+        self.ra, self.dec = self._center()
+        self.center = SkyCoord(self.ra, self.dec,
                                obstime=Time(2015.5, format='decimalyear'))
+        # TODO check epoch of field designation
         self.platerun, self.programname = self.meta()
         self._radius = 1.49 * u.degree
-        self._plugHoles = [plate.get_table(platenum) for platenum in self._plates]
+        self._plates = [plate.Plate(platenum) for platenum in self._platenums]
+        # self._plugHoles = [plate.get_table(platenum) for platenum in self._plates]
 
     def __repr__(self):
         return f'Field({self.fieldname!r})'
 
     def __str__(self):
-        return f'Testing str'
+        first = f'Field: {self.fieldname!r}, RA: {self.ra!r}, Dec: {self.dec!r}'
+        second = f'Plate Numbers: {self._platenums!r}'
+        return first + second
 
     @property
     def plates(self):
@@ -73,6 +97,7 @@ class Field:
     @property
     def plugged_coords(self):
         """
+        self.targets = self._load_table()
         Coordinates of targets assigned fibers on plate
         """
         try:
@@ -80,6 +105,28 @@ class Field:
         except AttributeError:
             return self._construct_skycoords()
 
+    @property
+    def targets(self):
+        try:
+            return self._targets
+        except AttributeError:
+            self._targets = self._load_table()
+            return self._targets
+
+    def _load_table(self):
+        """
+        Takes all converts plates in field and combines target tables.
+        Creates new column with the fieldname. While repititive, this will
+        make Plateruns much easier to implement.
+        """
+
+        table = vstack([pl.targets for pl in self._plates])
+        N_targets = len(table)
+        field_column = Column(data=[self.name] * N_targets,
+                              name='field',
+                              dtype='str')
+        table.add_column(field_column)
+        return table
 
     def meta(self):
         prun = allplate_summary['platerun'][self._summary_indx][0]
