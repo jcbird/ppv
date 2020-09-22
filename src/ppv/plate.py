@@ -1,6 +1,6 @@
 from .util import paths
 from . import util
-from astropy.table import Table
+from astropy.table import Table, Column
 import astropy.units as u
 from pydl.pydlutils.yanny import yanny
 import numpy as np
@@ -100,9 +100,17 @@ class Plate():
 
     def _load_table(self):
         """
-        converts STRUCT1 of yanny object to astropy table
+        converts STRUCT1 of yanny object to astropy table.
+        Creates new column with the platenumber. While repititive, this will
+        make Fields and Plateruns much easier to implement.
         """
-        return dict_to_table(yanny_to_dict(self._plugHoles))
+        table = dict_to_table(yanny_to_dict(self._plugHoles))
+        N_targets = len(table)
+        plate_column = Column(data=[self.platenum] * N_targets,
+                              name='plate',
+                              dtype=np.int)
+        table.add_column(plate_column)
+        return table
 
     def columns(self):
         """
