@@ -6,39 +6,30 @@ Tools for dealing with SDSS-V plate files and plate runs.
 :header-args:  :exports code
 :END:
 
-- Setup environment (optional, but recommended)
+- *Setup environment* (optional, but recommended)\\
+  If fulfilling the [[Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with\\
+  ~conda env create -f ppv_sdss_min.yml~\\
 
-  If fulfilling the [[Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with
-
-  ~conda env create -f ppv_sdss_min.yml~
-
-  and activate the environment with
-
-  ~conda activate ppv~
-
+  and activate the environment with\\
+  ~conda activate ppv~\\
   Once you have activated your environment, proceed to clone and install!
 
+- *Clone this repository and install*\\
+  ~git clone https://github.com/jcbird/ppv.git~\\
+  and, to install the `ppv` package\\
+  ~python setup.py install~
 
-- Clone this repository and install
-   #+BEGIN_SRC shell
-    git clone https://github.com/jcbird/ppv.git
-   #+END_SRC
-
-   and, to install the `ppv` package
-
-   #+BEGIN_SRC shell
-    python setup.py install
-   #+END_SRC
-
-- Requirements
-   - python (>3.5, 3.8 preferred) [if this frightens you, read on]
-   - astropy
-   - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
-     Package from Benjamin Weaver for dealing with yanny files.
+- *Requirements*
+  - python (>3.5, 3.8 preferred) [if this frightens you, read on]
+  - astropy
+  - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
+    Package from Benjamin Weaver for dealing with yanny files.
 
 * Basic Usage
 
-Let's assume that you have a list of targets with RA, Dec, and catalogIDs and you want to know which of these stars *could* have been targeted within platerun '2020' available to be
+Let's assume that you have a list of targets with RA, Dec, and catalogIDs and you want to know which of these stars *could* have been targeted within platerun =2020.08.c.bhm-mwm=.
+
+You will need to constuct a `Targets` and `Platerun` object available to be
 
 Check out the tutorial notebook (in the [[file:notebooks/][Notebooks]] directory) for more in depth information and examples.
 
