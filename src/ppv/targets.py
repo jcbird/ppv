@@ -1,8 +1,11 @@
 from . import util
+from . import groups
 import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy import units as u
+
+
 
 
 class Targets:
@@ -17,7 +20,7 @@ class Targets:
     assigned: relative to the Field
     """
 
-    def __init__(self, ra, dec, catalogid=None, ancillary=None, epoch=2015.5):
+    def __init__(self, ra, dec, catalogid, ancillary=None, epoch=2015.5):
         """Constructor.
         ancillary is best used as the full table where 'ra' and 'dec' came from. Needs to be a one to one match with 'ra', 'dec'.
 
@@ -68,12 +71,14 @@ class Targets:
         """
         return self.coords.separation(center) < radius
 
-    def available(self, FieldorPlate):
+    def available_in(self, FieldorPlate):
         """
-        Given a Field or Plate instance, return a boolean array of if the
-        targets are available.
+        Given a Field or Plate instance, return a boolean array of target members
+        that could be observed. Availability based on position only.
         """
-
+        if isinstance(FieldorPlate, groups.Platerun):
+            print(f'{FieldorPlate} appears to be a platerun. Use available_in_platerun method instead.')
+            return
         indx = self._available_indx.get(FieldorPlate.name,
                                         self._radial_search(FieldorPlate.center,
                                                             FieldorPlate._radius)
@@ -82,83 +87,47 @@ class Targets:
             self._available_indx[FieldorPlate.name] = indx
         return indx
 
-
-    def _available(self, field):
+    def available_in_platerun(self, platerun):
         """
-
+        Given a platerun, return a boolean array of all members that could be observed
+        in any field of the platerun.
         """
-        # Here, only care about index of Targets
-        idx_targ = np.where(self.coords.separation(field.center) <
-                            field._radius)[0]
-        self._available_indx[field.name] = idx_targ
-        return idx_targ
+        indx_all = [self.available_in(field) for field in platerun.fieldnames]
+        return np.bitwise_or.reduce(indx_all)
 
-    def available_in_field(self, field, **report_kwds):
-        """available.
-
-        Parameters
-        ----------
-        field : class instance
-            field object
+    def _within(self, catalogIDs):
         """
-        indx = self._available_indx.get(field.name, self._available(field))
-        return self._report(**report_kwds)[indx]
-
-    def available(self, instance, **report_kwds):
-        """available targets in field OR platerun
-
-        Parameters
-        ----------
-        instance : field or platerun instance
-            class instance
+        membership test of targets within array-like catalogIDs
         """
-        if util.is_platerun(instance):
-            return [self.available_in_field(field, **report_kwds) for field in
-                    instance.fields]
-            # do platerun stuff
-        else: # is field
-            return self.available_in_field(instance, **report_kwds)
+        return np.in1d(self.catalogid, catalogIDs)
 
-    def _assigned(self, field):
+
+    def assigned_in(self, pl_field_plrun):
         """
-        positional search has to happen for now because no way to directly tie targetDB in with plugHoles output (2020/09/18).
+        Given a Plate, Field, or PlateRun instance, return a boolean array
+        representing if each Target member was assigned a fiber according
+        to catalogID.
         """
-        # Here, only care about index of Targets
+        indx = self._assigned_indx.get(pl_field_plrun.name,
+                                       self._within(pl_field_plrun.targets['catalogid']))
+        if pl_field_plrun.name not in self._assigned_indx:
+            self._assigned_indx[pl_field_plrun.name] = indx
+        return indx
 
-        avail_coords = self.available_in_field(field, coords=True)
-        inds = np.arange(len(avail_coords), dtype=int)
-        idx_assigned = []
-        for plug_coords in field.plugged_coords:
-            idx_field, sep2d, _ = avail_coords.match_to_catalog_sky(plug_coords)
-            max_sep = 1.0 * u.arcsec  # within one arcsec
-            constraint = sep2d < max_sep
-            idx_assigned.append(inds[constraint])
-        self._assigned_indx[field.name] = idx_assigned
-        return idx_assigned
-
-    def assigned_in_field(self, field, **report_kwds):
-        """available.
-
-        Parameters
-        ----------
-        field : class instance
-            field object
+    def not_assigned_in(self, pl_field_plrun):
         """
-        indx = self._assigned_indx.get(field.name, self._assigned(field))
-        return [self.available_in_field(field, **report_kwds)[ind] for ind in indx]
-
-    def assigned(self, instance, **report_kwds):
-        """available targets in field OR platerun
-
-        Parameters
-        ----------
-        instance : field or platerun instance
-            class instance
+        Given a Plate, Field, or PlateRun instance, return a boolean array
+        representing target members that were available and were NOT assigned a fiber.
         """
-        if util.is_platerun(instance):
-            return [self.assigned_in_field(field, **report_kwds) for field in
-                    instance.fields]
-            # do platerun stuff
-        else: # is field
-            return self.assigned_in_field(instance, **report_kwds)
+        try:
+            available_ = self.available_in(pl_field_plrun)
+        except AttributeError:
+            available_ = self.available_in_platerun(pl_field_plrun)
+        assigned_ = self.assigned_in(pl_field_plrun)
+        return available_ & ~assigned_
+
+
+
+
+
 

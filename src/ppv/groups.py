@@ -22,22 +22,6 @@ def plates_of_field(fieldname):  # returns a list
 
 
 
-def contains(self, catIDs):
-    """
-    Checks for membership in a plate based on catalogID.
-    ALL catIDs must be in plate to return True.
-
-    Parameters
-    ----------
-    catIDs : array-like
-        List of catalogIDs.
-
-    """
-    try: # already array-like
-        return np.in1d(catIDs, self.targets['catalogid'])
-    except TypeError:
-        return np.in1d(np.array([catIDs]), self.targets['catalogid'])
-
 
 
 class Field:
@@ -133,8 +117,53 @@ class Field:
         programname = allplate_summary['programname'][self._summary_indx][0]
         return prun, programname
 
+    # TODO turn this around for getting info from table
+    def contains(self, catIDs):
+        """
+        Checks for membership in a plate based on catalogID.
+        ALL catIDs must be in plate to return True.
+
+        Parameters
+        ----------
+        catIDs : array-like
+            List of catalogIDs.
+
+        """
+        try: # already array-like
+            return np.in1d(catIDs, self.targets['catalogid'])
+        except TypeError:
+            return np.in1d(np.array([catIDs]), self.targets['catalogid'])
 
 
+class Platerun:
+    def __init__(self):
+        pass
+
+    @property
+    def fields(self):
+        # load_fields
+        pass
+
+    @property
+    def targets(self):
+        try:
+            return self._targets
+        except AttributeError:
+            self._targets = self._load_table()
+            return self._targets
+
+    def _load_table(self):
+        """
+        Takes all fields within platerun and combines target tables.
+        """
+
+        table = vstack([field.targets for field in self._plates])
+        N_targets = len(table)
+        field_column = Column(data=[self.name] * N_targets,
+                              name='field',
+                              dtype='str')
+        table.add_column(field_column)
+        return table
 
 
 
