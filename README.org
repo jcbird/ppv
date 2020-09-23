@@ -3,16 +3,15 @@
 Tools for dealing with SDSS-V plate files and plate runs.
 * Installation
 - Setup environment (optional, but recommended)
-If fulfilling the [[Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with
-   #+BEGIN_SRC shell
-conda env create -f ppv_sdss_min.yml
-   #+END_SRC
-   and activate the environment with
-
-   #+BEGIN_SRC shell
-conda activate ppv
-   #+END_SRC
-Once you have activated your environment, proceed to clone and install!
+  If fulfilling the [[Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with
+  #+BEGIN_SRC shell
+    conda env create -f ppv_sdss_min.yml
+  #+END_SRC
+  and activate the environment with
+  #+BEGIN_SRC shell
+    conda activate ppv
+  #+END_SRC
+  Once you have activated your environment, proceed to clone and install!
 
 
 - Clone this repository and install
