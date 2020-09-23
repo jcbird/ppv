@@ -1,18 +1,22 @@
 """
 Parameter configuration
 """
+from configparser import ConfigParser
 from pathlib import Path
 
-
-# Testing purposes
-platerun_dir = Path.home() / 'obsdata/plates/0150XX'
-# #
-
-_src_dir = 'src/ppv/'
+# Fixed relative path
 _plansummary = Path(__file__).parent / 'data/platePlans_sdss5.fits'
 
+
+config = ConfigParser()
+config.read('setup.ini')
+
+
+plate_dir = Path(config['paths']['plate_dir'])
+
+
 # To be changed by user
-plate_dir = Path.home() / 'obsdata/plates'
+##  plate_dir = Path.home() / 'obsdata/plates'
 # five_dir = Path.home() / 'obsdata/plates'
 
 

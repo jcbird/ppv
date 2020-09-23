@@ -6,8 +6,6 @@ from astropy.time import Time
 from astropy import units as u
 
 
-
-
 class Targets:
     """
     Class to act as interface to target list of interest.
@@ -131,4 +129,4 @@ class Targets:
             available_ = self.available_in_platerun(pl_field_plrun)
         except (AttributeError, KeyError) as error:
             available_ = self.available_in(pl_field_plrun)
-        return available_ & ~assigned_ 
+        return available_ & ~assigned_

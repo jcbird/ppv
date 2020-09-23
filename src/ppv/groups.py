@@ -1,4 +1,4 @@
-from .data import io as data_io
+from . import allplate_summary, _names_array, _platerun_array
 from . import plate
 import numpy as np
 from astropy import units as u
@@ -6,12 +6,6 @@ from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.table import vstack, Column
 
-allplate_summary = data_io.load_plansummary()
-allplate_summary.add_index('name')  # for quick filtering on fieldname
-_names_array = allplate_summary['name'].astype('U')  # for quick checking
-_platerun_array = allplate_summary['platerun'].astype('U')  # for quick checking
-
-#TODO make allplate_summary available in base module, ppv.allplate_summary
 
 def indx_in_plateruns(fieldname):
     return np.where(_names_array == fieldname)[0]
@@ -139,7 +133,6 @@ class Field:
         programname = allplate_summary['programname'][self._summary_indx][0]
         return prun, programname
 
-    # TODO turn this around for getting info from table
     def contains(self, catIDs):
         """
         Checks for membership in a plate based on catalogID.
