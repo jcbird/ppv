@@ -2,6 +2,10 @@
 
 Tools for dealing with SDSS-V plate files and plate runs.
 * Installation
+:PROPERTIES:
+:header-args:  :exports code
+:END:
+
 - Setup environment (optional, but recommended)
   If fulfilling the [[Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with
   #+BEGIN_SRC shell
