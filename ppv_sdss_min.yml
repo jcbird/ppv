@@ -1,0 +1,13 @@
+name: ppv
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - pip
+  - pandas
+  - astropy
+  - jupyterlab
+  - matplotlib
+  - jupyter
+  - pip:
+      - "git+https://github.com/weaverba137/pydl.git"
