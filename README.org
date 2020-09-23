@@ -1,5 +1,22 @@
-#+TITLE: ppv
+#+TITLE: ppv - Python Plate Vetting
 
 Tools for dealing with SDSS-V plate files and plate runs.
 * Installation
+1) Requirements
+   - python (>3.5, 3.8 preferred) [if this frightens you, read on]
+   - astropy
+   - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
+     Package from Benjamin Weaver for dealing with yanny files.
+
+
+
+
+
+
+   
+** Clone this repository
+   #+BEGIN_SRC shell
+    git clone https://github.com/jcbird/ppv.git
+   #+END_SRC
+
 check this out!
