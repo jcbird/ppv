@@ -2,8 +2,8 @@
 
 Tools for dealing with SDSS-V plate files and plate runs.
 * Installation
-** Setup environment (optional, but recommended)
-If fulfilling the [[*Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with
+- Setup environment (optional, but recommended)
+If fulfilling the [[Requirements]] seems daunting and you run the conda package manager, you can set up a python environment that will happily install `ppv` with
    #+BEGIN_SRC shell
 conda env create -f ppv_sdss_min.yml
    #+END_SRC
@@ -15,7 +15,7 @@ conda activate ppv
 Once you have activated your environment, proceed to clone and install!
 
 
-** Clone this repository and install
+- Clone this repository and install
    #+BEGIN_SRC shell
     git clone https://github.com/jcbird/ppv.git
    #+END_SRC
@@ -26,8 +26,18 @@ Once you have activated your environment, proceed to clone and install!
     python setup.py install
    #+END_SRC
 
-** Requirements
+- Requirements
    - python (>3.5, 3.8 preferred) [if this frightens you, read on]
    - astropy
    - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
      Package from Benjamin Weaver for dealing with yanny files.
+
+* Basic Usage
+
+Let's assume that you have a list of targets with RA, Dec, and catalogIDs and you want to know which of these stars *could* have been targeted within platerun '2020' available to be
+
+Check out the tutorial notebook (in the [[file:notebooks/][Notebooks]] directory) for more in depth information and examples.
+
+
+
+*
