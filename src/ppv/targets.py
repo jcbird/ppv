@@ -87,12 +87,12 @@ class Targets:
             self._available_indx[FieldorPlate.name] = indx
         return indx
 
-    def available_in_platerun(self, platerun):
+    def available_in_platerun(self, platerun_):
         """
         Given a platerun, return a boolean array of all members that could be observed
         in any field of the platerun.
         """
-        indx_all = [self.available_in(field) for field in platerun.fieldnames]
+        indx_all = [self.available_in(field) for field in platerun_.fields]
         return np.bitwise_or.reduce(indx_all)
 
     def _within(self, catalogIDs):
@@ -100,7 +100,6 @@ class Targets:
         membership test of targets within array-like catalogIDs
         """
         return np.in1d(self.catalogid, catalogIDs)
-
 
     def assigned_in(self, pl_field_plrun):
         """
@@ -114,20 +113,22 @@ class Targets:
             self._assigned_indx[pl_field_plrun.name] = indx
         return indx
 
+    def assigned_info(self, pl_field_plrun):
+        """
+        Given a Plate, Field, or PlateRun instance, get the rows of their 
+        targets table that correspond to the assigned member targets.
+        """
+        catalogids_ = self.catalogid[self.assigned_in(pl_field_plrun)]
+        return pl_field_plrun.get_targets(catalogids_)
+
     def not_assigned_in(self, pl_field_plrun):
         """
         Given a Plate, Field, or PlateRun instance, return a boolean array
         representing target members that were available and were NOT assigned a fiber.
         """
-        try:
-            available_ = self.available_in(pl_field_plrun)
-        except AttributeError:
-            available_ = self.available_in_platerun(pl_field_plrun)
         assigned_ = self.assigned_in(pl_field_plrun)
-        return available_ & ~assigned_
-
-
-
-
-
-
+        try:
+            available_ = self.available_in_platerun(pl_field_plrun)
+        except (AttributeError, KeyError) as error:
+            available_ = self.available_in(pl_field_plrun)
+        return available_ & ~assigned_ 

@@ -136,23 +136,23 @@ class Plate():
         return self.targets.colnames
 
 
-    def contains(self, catIDs):
+    def _contains(self, catIDs):
         """
         Checks for membership in a plate based on catalogID.
-        ALL catIDs must be in plate to return True.
 
         Parameters
         ----------
         catIDs : array-like
             List of catalogIDs.
 
+        # TODO make util function that checks if catIDs is a scalar or array
         """
         try: # already array-like
-            return np.in1d(catIDs, self.targets['catalogid'])
+            return np.in1d(self.targets['catalogid'], catIDs)
         except TypeError:
-            return np.in1d(np.array([catIDs]), self.targets['catalogid'])
+            return np.in1d(self.targets['catalogid'], np.array([catIDs]))
 
-    def get_targets(self, row_indx):
+    def get_targets(self, catalogIDs):
         """get_rows.
 
         Parameters
@@ -162,7 +162,7 @@ class Plate():
             Indexes the self.targets attribute.
 
         """
-        return self.targets[row_indx]
+        return self.targets[self._contains(catalogIDs)]
 
     def __contains__(self, catIDs):
         """

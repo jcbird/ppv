@@ -9,9 +9,9 @@ from astropy.table import vstack, Column
 allplate_summary = data_io.load_plansummary()
 allplate_summary.add_index('name')  # for quick filtering on fieldname
 _names_array = allplate_summary['name'].astype('U')  # for quick checking
+_platerun_array = allplate_summary['platerun'].astype('U')  # for quick checking
 
-def field_in_plateruns(fieldname):
-    return allplate_summary.loc[fieldname]
+#TODO make allplate_summary available in base module, ppv.allplate_summary
 
 def indx_in_plateruns(fieldname):
     return np.where(_names_array == fieldname)[0]
@@ -20,8 +20,8 @@ def plates_of_field(fieldname):  # returns a list
     plates = allplate_summary['plateid'][indx_in_plateruns(fieldname)]
     return plates.tolist()
 
-
-
+def in_platerun(run_name):
+    return np.where(_platerun_array == run_name)[0]
 
 
 class Field:
@@ -47,10 +47,10 @@ class Field:
         # self._plugHoles = [plate.get_table(platenum) for platenum in self._plates]
 
     def __repr__(self):
-        return f'Field({self.fieldname!r})'
+        return f'Field({self.name!r})'
 
     def __str__(self):
-        first = f'Field: {self.fieldname!r}, RA: {self.ra!r}, Dec: {self.dec!r}'
+        first = f'Field: {self.name!r}, RA: {self.ra!r}, Dec: {self.dec!r}'
         second = f'Plate Numbers: {self._platenums!r}'
         return first + second
 
@@ -104,13 +104,35 @@ class Field:
         make Plateruns much easier to implement.
         """
 
-        table = vstack([pl.targets for pl in self._plates])
+        table = vstack([pl.targets for pl in self.plates])
         N_targets = len(table)
         field_column = Column(data=[self.name] * N_targets,
                               name='field',
                               dtype='S200')
         table.add_column(field_column)
         return table
+
+    def _contains(self, catIDs):
+        """
+        Checks for membership in a plate based on catalogID.
+
+        Parameters
+        ----------
+        catIDs : array-like
+            List of catalogIDs.
+
+        # TODO make util function that checks if catIDs is a scalar or array
+        """
+        try: # already array-like
+            return np.in1d(self.targets['catalogid'], catIDs)
+        except TypeError:
+            return np.in1d(self.targets['catalogid'], np.array([catIDs]))
+
+    def get_targets(self, catalogIDs):
+        """
+        Return rows of the Field targets table given a list of catalogIDs
+        """
+        return self.targets[self._contains(catalogIDs)]
 
     def meta(self):
         prun = allplate_summary['platerun'][self._summary_indx][0]
@@ -136,13 +158,35 @@ class Field:
 
 
 class Platerun:
-    def __init__(self):
-        pass
+    """
+    Class to act as interface to platerun.
+    """
+
+    def __init__(self, run_name):
+        self.name = run_name
+        self.fieldnames = self._get_fields()
+
+    def _get_fields(self):
+        idx = in_platerun(self.name)
+        names = allplate_summary['name'].astype('U')[idx]
+        return np.unique(names)  # no field repeats
+
+    @property
+    def platesummary(self):
+        return allplate_summary[in_platerun(self.name)]
+
+
+    def load_fields(self):
+        return [Field(fname) for fname in
+                self.fieldnames]
 
     @property
     def fields(self):
-        # load_fields
-        pass
+        try:
+            return self._fields
+        except AttributeError:
+            self._fields = self.load_fields()
+            return self._fields
 
     @property
     def targets(self):
@@ -157,13 +201,29 @@ class Platerun:
         Takes all fields within platerun and combines target tables.
         """
 
-        table = vstack([field.targets for field in self._plates])
-        N_targets = len(table)
-        field_column = Column(data=[self.name] * N_targets,
-                              name='field',
-                              dtype='str')
-        table.add_column(field_column)
+        table = vstack([field.targets for field in self.fields])
         return table
 
+    def _contains(self, catIDs):
+        """
+        Checks for membership in a plate based on catalogID.
+
+        Parameters
+        ----------
+        catIDs : array-like
+            List of catalogIDs.
+
+        # TODO make util function that checks if catIDs is a scalar or array
+        """
+        try: # already array-like
+            return np.in1d(self.targets['catalogid'], catIDs)
+        except TypeError:
+            return np.in1d(self.targets['catalogid'], np.array([catIDs]))
+
+    def get_targets(self, catalogIDs):
+        """
+        Return rows of the Platerun targets table given a list of catalogIDs
+        """
+        return self.targets[self._contains(catalogIDs)]
 
 
