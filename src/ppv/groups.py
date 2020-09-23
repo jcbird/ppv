@@ -108,7 +108,7 @@ class Field:
         N_targets = len(table)
         field_column = Column(data=[self.name] * N_targets,
                               name='field',
-                              dtype='str')
+                              dtype='S200')
         table.add_column(field_column)
         return table
 
