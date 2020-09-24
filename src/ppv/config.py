@@ -19,6 +19,7 @@ config = ConfigParser()
 try:
     config.read_file(open(os.fspath(_config_path), 'r'))
     plate_dir = Path(config['paths']['plate_dir'])
+    utah_username = config['username']['sdss_org']
 except FileNotFoundError:
     print(f'Configuration file does not exist!')
     print(f'Copy {_filename} from the ppv repository to the directory {_config_path.parent}')
