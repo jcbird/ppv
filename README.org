@@ -30,13 +30,13 @@ Tools for dealing with SDSS-V plate files and plate runs.
     Package from Benjamin Weaver for dealing with yanny files.
 
 * Configuration and Data Files
-~ppv~ interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [[file:ppv_setup.ini][ppv_setup.ini]]. This setup file is short, but will grow in future releases.
+~ppv~ interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [[file:ppv_setup.ini][=ppv_setup.ini=]]. This setup file is short, but will grow in future releases.
 
 The contents of ~ppv_setup.ini~
-| parameter | default value               | description                                     |
-|-----------+-----------------------------+-------------------------------------------------|
-| plate_dir | /home/jquark/obsdata/plates | absolute path to directory to store plate files |
-| sdss_org  | username_at_utah            | username for sdss.org server at Utah            |
+| parameter   | default value               | description                                     |
+|-------------+-----------------------------+-------------------------------------------------|
+| =plate_dir= | /home/jquark/obsdata/plates | absolute path to directory to store plate files |
+| =sdss_org=  | =username_at_utah=          | username for sdss.org server at Utah            |
 
 Notes:
 - file is ONLY read locally.
@@ -56,8 +56,22 @@ and edit accordingly.
 If you have an account at Utah and put the ~ppv_setup.ini~ file in your =$HOME/.config= directory, you are good to go! ~ppv~ will take of everything!
 
 * Concepts
+There are four basic objects in the ~ppv~ package: =Plate=, =Field=, =Platerun=, and =Targets=. There is also a convenient plate summmary table.
+
+*** Plate Summary
+Table accessible via ~ppv.allplate_summary~. Each row corresponds to a single plate and contains, amongst other columns, the plate id, position of the plate center, the program name driving plate design, the corresponding field (name), and the platerun.
+*** Plate
+One to one correspondance with a plate. A =Plate= is identified by its unique plate id (an integer; e.g., 15004).
+*** Field
+A field is defined by a field name (a string; e.g., =AQM_001.85+26.44=) and represents one field of view on the sky. All plates belong to one field. All fields contain one or more plates.
+*** Platerun
+A platerun is definied by its name (a string; e.g., 2020.08.c.bhm-mwm). A platerun is a collection of fields (and thus plates) to be a drilled for a given observing run.
+*** Targets
+The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
 * Basic Usage
+See the [[file:docs/PPV Tutorial.ipynb][tutorial notebook]] in the =docs= directory.
+
 
 Let's assume that you have a list of targets with numpy arrays =RA=, =Dec=, and =catalogIDs= representing the positions and catalogDB IDs, respecitively.
 You want to know which of these stars *could* have been targeted within platerun =2020.08.c.bhm-mwm=.
@@ -75,21 +89,15 @@ To get boolean mask (True/False array with the same shape as =catalogIDs=) of th
 
 
 
-~
-~targets =
-
-#+BEGIN_SRC
-
-
-Check out the tutorial notebook (in the [[file:notebooks/][Notebooks]] directory) for more in depth information and examples.
-
 * FAQs
-1) I don't have an account at Utah and/or I can't get the plugHoles files. \\
-   If you plan to checking SDSS-V targeting long term, I strongly suggest you contact Joel Brownstein (check if there is a page somewhere) get access. \\
-   In the meantime, submit an issue above with "No Utah account" as the title. I will send you a tarball with the correct files and directory structure.
-2) Something doesn't work, I wish ~ppv~ did THIS, why does ~ppv~ do THIS, I want to do X with ~ppv~, or I wish something in ~ppv~ had a different name. \\
-   Awesome, let's make it work. Submit an issue!
+*** I don't have an account at Utah and/or I can't get the plugHoles files.
+If you plan to checking SDSS-V targeting long term, I strongly suggest you contact Joel Brownstein (check if there is a page somewhere) get access. \\
+In the meantime, submit an issue above with "No Utah account" as the title. I will send you a tarball with the correct files and directory structure.
+*** Something doesn't work, I wish ~ppv~ did THIS, why does ~ppv~ do THIS, I want to do X with ~ppv~, or I wish something in ~ppv~ had a different name.
+Awesome, let's make it work. Submit an issue!
 
 * TODOs
 1) Make it easy to get Gaia source IDs for all targets.
-2) Much more.
+2) Get documentation into ReadtheDocs format.
+3) Make it so new plateruns don't require pulling the repository.
+4) Much more.
