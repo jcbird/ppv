@@ -19,7 +19,7 @@ Tools for dealing with SDSS-V plate files and plate runs.
   and, to install the `ppv` package\\
   ~python setup.py install~
 
-- *Requirements*
+- *Requirements* <<Requirements>>
   - python (>3.5, 3.8 preferred) [if this frightens you, read on]
   - astropy
   - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
