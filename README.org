@@ -30,16 +30,32 @@ Tools for dealing with SDSS-V plate files and plate runs.
     Package from Benjamin Weaver for dealing with yanny files.
 
 * Configuration and Data Files
-~ppv~ interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [[file:setup.ini][setup.ini]]. This setup file is short, but will grow in future releases.
+~ppv~ interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [[file:ppv_setup.ini][ppv_setup.ini]]. This setup file is short, but will grow in future releases.
 
-*Note* You must edit the ~setup.ini~ and copy it to your working directory. For example, there is a copy of ~setup.ini~ in the [[file:Notebooks][Notebooks]] directory to facilitate running the tutorial notebook.
+The contents of ~ppv_setup.ini~
+| parameter | default value               | description                                     |
+|-----------+-----------------------------+-------------------------------------------------|
+| plate_dir | /home/jquark/obsdata/plates | absolute path to directory to store plate files |
+| sdss_org  | username_at_utah            | username for sdss.org server at Utah            |
 
-The contents of ~setup.ini~
-| parameter | default value               | description                       |
-|-----------+-----------------------------+-----------------------------------|
-| plate_dir | /home/jquark/obsdata/plates | absolute path to plates directory |
+Notes:
+- file is ONLY read locally.
+- plate_dir does not need to exist. ~ppv~ will automatically create this directory if needed.
+
+
+** Copy ~ppv_setup.ini~ to home/.config and edit
+You MUST edit the ~ppv_setup.ini~ and copy it to the ~.config~ directory in your home directory. Make this directory if necessary. Using a posix shell,
+#+BEGIN_SRC shell
+mkdir ~/.config
+cd ppv
+cp ppv_setup.ini ~/.config
+#+END_SRC
+and edit accordingly.
 
 ** Plate directory and PlugHoles files
+If you have an account at Utah and put the ~ppv_setup.ini~ file in your =$HOME/.config= directory, you are good to go! ~ppv~ will take of everything!
+
+* Concepts
 
 * Basic Usage
 
@@ -67,6 +83,13 @@ To get boolean mask (True/False array with the same shape as =catalogIDs=) of th
 
 Check out the tutorial notebook (in the [[file:notebooks/][Notebooks]] directory) for more in depth information and examples.
 
+* FAQs
+1) I don't have an account at Utah and/or I can't get the plugHoles files. \\
+   If you plan to checking SDSS-V targeting long term, I strongly suggest you contact Joel Brownstein (check if there is a page somewhere) get access. \\
+   In the meantime, submit an issue above with "No Utah account" as the title. I will send you a tarball with the correct files and directory structure.
+2) Something doesn't work, I wish ~ppv~ did THIS, why does ~ppv~ do THIS, I want to do X with ~ppv~, or I wish something in ~ppv~ had a different name. \\
+   Awesome, let's make it work. Submit an issue!
 
-
-*
+* TODOs
+1) Make it easy to get Gaia source IDs for all targets.
+2) Much more.
