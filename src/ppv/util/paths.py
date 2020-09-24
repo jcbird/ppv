@@ -6,8 +6,6 @@ from pathlib import Path
 import os
 
 
-_subdirs = os.listdir(config.plate_dir)
-
 def platenum_as_str(platenum):
     """String representation of platenumber with leading zeros if necessary.
 
