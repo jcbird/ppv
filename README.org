@@ -25,11 +25,32 @@ Tools for dealing with SDSS-V plate files and plate runs.
   - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
     Package from Benjamin Weaver for dealing with yanny files.
 
+* Configuration and Data Files
+`ppv` interacts with a number of data files and needs to know their location on disk. This is accomplished through
+
 * Basic Usage
 
-Let's assume that you have a list of targets with RA, Dec, and catalogIDs and you want to know which of these stars *could* have been targeted within platerun =2020.08.c.bhm-mwm=.
+Let's assume that you have a list of targets with numpy arrays =RA=, =Dec=, and =catalogIDs= representing the positions and catalogDB IDs, respecitively.
+You want to know which of these stars *could* have been targeted within platerun =2020.08.c.bhm-mwm=.
 
-You will need to constuct a `Targets` and `Platerun` object available to be
+You will need to constuct a `Targets` object to contain information about your targets and a `Platerun` object to interface with; e.g.,
+
+#+BEGIN_SRC python
+import ppv
+targets = ppv.Targets(RA, Dec, catalogid=catalogIDs)
+platerun = ppv.Platerun('2020.08.c.bhm-mwm')
+#+END_SRC python
+
+To get boolean mask (True/False array with the same shape as =catalogIDs=) of the available targets,\\
+~targets.available_in(platerun)~
+
+
+
+~
+~targets =
+
+#+BEGIN_SRC
+
 
 Check out the tutorial notebook (in the [[file:notebooks/][Notebooks]] directory) for more in depth information and examples.
 
