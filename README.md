@@ -1,19 +1,20 @@
 
 # Table of Contents
 
-1.  [Installation](#org4944fe1)
-2.  [Configuration and Data Files](#org706e558)
-3.  [Basic Usage](#orgbee505f)
+1.  [Installation](#org9373dd6)
+    1.  [Requirements ](#orgec512ec)
+2.  [Configuration and Data Files](#org95ff4c4)
+3.  [Basic Usage](#orgdbfa10d)
 
 Tools for dealing with SDSS-V plate files and plate runs.
 
 
-<a id="org4944fe1"></a>
+<a id="org9373dd6"></a>
 
 # Installation
 
 -   **Setup environment** (optional, but recommended)  
-    If fulfilling the [3](#org1aa1317) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with  
+    If fulfilling the [1.1](#orgdc19eed) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with  
     `conda env create -f ppv_sdss_min.yml`  
     
     and activate the environment with  
@@ -25,21 +26,25 @@ Tools for dealing with SDSS-V plate files and plate runs.
     and, to install the \`ppv\` package  
     `python setup.py install`
 
--   **Requirements** <a id="org1aa1317"></a>
-    -   python (>3.5, 3.8 preferred) [if this frightens you, read on]
-    -   astropy
-    -   [pydl](https://github.com/jcbird/ppv.git) (development version)
-        Package from Benjamin Weaver for dealing with yanny files.
+
+<a id="orgec512ec"></a>
+
+## Requirements <a id="orgdc19eed"></a>
+
+-   python (>3.5, 3.8 preferred) [if this frightens you, read on]
+-   astropy
+-   [pydl](https://github.com/jcbird/ppv.git) (development version)
+    Package from Benjamin Weaver for dealing with yanny files.
 
 
-<a id="org706e558"></a>
+<a id="org95ff4c4"></a>
 
 # Configuration and Data Files
 
 \`ppv\` interacts with a number of data files and needs to know their location on disk. This is accomplished through
 
 
-<a id="orgbee505f"></a>
+<a id="orgdbfa10d"></a>
 
 # Basic Usage
 
