@@ -1,52 +1,46 @@
 
 # Table of Contents
 
-1.  [Installation](#org20ed218)
-    1.  [Requirements ](#orgd69c357)
-2.  [Configuration and Data Files](#orgd5002b9)
-3.  [Basic Usage](#org0d80a40)
+1.  [Installation](#orgba4b194)
+2.  [Configuration and Data Files](#orgdda02cd)
+3.  [Basic Usage](#orgc3d2a8c)
 
 Tools for dealing with SDSS-V plate files and plate runs.
 
 
-<a id="org20ed218"></a>
+<a id="orgba4b194"></a>
 
 # Installation
 
--   **Setup environment** (optional, but recommended)  
-    If fulfilling the [Requirements](#org236f418) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with
+-   **Setup environment** (optional, but recommended)   
+    If fulfilling the [Requirements](#org3c59a28) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with
     
         conda env create -f ppv_sdss_min.yml  # creates conda environment
         conda activate ppv  # activates conda environment
     
-    and activate the environment with  
-    `conda activate ppv`  
     Once you have activated your environment, proceed to clone and install!
 
--   **Clone this repository and install**  
-    `git clone https://github.com/jcbird/ppv.git`  
-    and, to install the \`ppv\` package  
-    `python setup.py install`
+-   **Clone this repository and install**
+    
+        git clone https://github.com/jcbird/ppv.git  # clone repository
+        cd ppv
+        python setup.py install  # install ==ppv== package
+
+-   **Requirements** <a id="org3c59a28"></a>
+    -   python (>3.5, 3.8 preferred) [if this frightens you, read on]
+    -   astropy
+    -   [pydl](https://github.com/jcbird/ppv.git) (development version)
+        Package from Benjamin Weaver for dealing with yanny files.
 
 
-<a id="orgd69c357"></a>
-
-## Requirements <a id="org236f418"></a>
-
--   python (>3.5, 3.8 preferred) [if this frightens you, read on]
--   astropy
--   [pydl](https://github.com/jcbird/ppv.git) (development version)
-    Package from Benjamin Weaver for dealing with yanny files.
-
-
-<a id="orgd5002b9"></a>
+<a id="orgdda02cd"></a>
 
 # Configuration and Data Files
 
-\`ppv\` interacts with a number of data files and needs to know their location on disk. This is accomplished through
+`ppv` interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [setup.ini](setup.ini). The default contents of this file are:
 
 
-<a id="org0d80a40"></a>
+<a id="orgc3d2a8c"></a>
 
 # Basic Usage
 
