@@ -5,6 +5,7 @@ from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from pydl.pydlutils.yanny import yanny
 import astropy.units as u
+import os
 import numpy as np
 
 
@@ -19,7 +20,7 @@ _field_dtypes = [(name, dtype) for name, dtype in zip(fields, dtypes)]
 
 
 def load_yanny(platenum):
-    filepath = paths.plateholes(platenum).as_posix()
+    filepath = os.fspath(paths.plateholes(platenum))
     pholes_obj = yanny(filepath, raw=True)
     return pholes_obj
 

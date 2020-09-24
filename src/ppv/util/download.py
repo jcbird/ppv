@@ -53,3 +53,5 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
     subprocess.check_call(rsync_cmd)
     return None
 
+
+# TODO make function for plateplans.par file
