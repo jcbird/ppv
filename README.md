@@ -1,21 +1,23 @@
 
 # Table of Contents
 
-1.  [Installation](#org9373dd6)
-    1.  [Requirements ](#orgec512ec)
-2.  [Configuration and Data Files](#org95ff4c4)
-3.  [Basic Usage](#orgdbfa10d)
+1.  [Installation](#orgfd250c1)
+    1.  [Requirements ](#org2c66b3f)
+2.  [Configuration and Data Files](#orgdc0b9f8)
+3.  [Basic Usage](#org9f876fc)
 
 Tools for dealing with SDSS-V plate files and plate runs.
 
 
-<a id="org9373dd6"></a>
+<a id="orgfd250c1"></a>
 
 # Installation
 
 -   **Setup environment** (optional, but recommended)  
-    If fulfilling the [1.1](#orgdc19eed) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with  
+    If fulfilling the [Requirements](#org113a814) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with  
     `conda env create -f ppv_sdss_min.yml`  
+    
+        conda env create -f ppv_sdss_min.yml
     
     and activate the environment with  
     `conda activate ppv`  
@@ -27,9 +29,9 @@ Tools for dealing with SDSS-V plate files and plate runs.
     `python setup.py install`
 
 
-<a id="orgec512ec"></a>
+<a id="org2c66b3f"></a>
 
-## Requirements <a id="orgdc19eed"></a>
+## Requirements <a id="org113a814"></a>
 
 -   python (>3.5, 3.8 preferred) [if this frightens you, read on]
 -   astropy
@@ -37,14 +39,14 @@ Tools for dealing with SDSS-V plate files and plate runs.
     Package from Benjamin Weaver for dealing with yanny files.
 
 
-<a id="org95ff4c4"></a>
+<a id="orgdc0b9f8"></a>
 
 # Configuration and Data Files
 
 \`ppv\` interacts with a number of data files and needs to know their location on disk. This is accomplished through
 
 
-<a id="orgdbfa10d"></a>
+<a id="org9f876fc"></a>
 
 # Basic Usage
 
