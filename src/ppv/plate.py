@@ -1,5 +1,5 @@
-from .util import paths
-from . import util
+from .util import paths, download
+from . import util, config
 from astropy.table import Table, Column
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
@@ -20,6 +20,17 @@ _field_dtypes = [(name, dtype) for name, dtype in zip(fields, dtypes)]
 
 
 def load_yanny(platenum):
+    platepath = paths.plateholes(platenum)
+
+    if platepath.exists():
+        pass
+    else:  # need to get plugHoles files
+        platebatch_path = paths.plate_batch(platenum)
+        platebatch = platebatch_path.name
+        print(f'{os.fspath(platepath)} does not exist. Getting files via rsync now')
+        print(f'--- Please enter your password for {config.utah_username} below --')
+        download.plugHoles_batch(platebatch)
+
     filepath = os.fspath(paths.plateholes(platenum))
     pholes_obj = yanny(filepath, raw=True)
     return pholes_obj

@@ -49,6 +49,8 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
     if execute is False:
         return rsync_cmd
 
+    print('Running command:')
+    print(rsync_cmd)
     rsync_cmd = shlex.split(rsync_cmd)
     subprocess.check_call(rsync_cmd)
     return None
