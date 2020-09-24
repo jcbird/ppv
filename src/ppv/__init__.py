@@ -8,7 +8,10 @@ _platerun_array = allplate_summary['platerun'].astype('U')  # for quick checking
 
 available_plateruns = list(set(_platerun_array))
 
+try:
+    from .plate import Plate
+    from .targets import Targets
+    from .groups import Field, Platerun
+except AttributeError:  # Configuration file was missing
+    pass
 
-from .plate import Plate
-from .targets import Targets
-from .groups import Field, Platerun
