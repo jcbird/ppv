@@ -70,7 +70,7 @@ A platerun is definied by its name (a string; e.g., 2020.08.c.bhm-mwm). A plater
 The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
 * Basic Usage
-See the [[file:docs/PPV Tutorial.ipynb][tutorial notebook]] in the =docs= directory.
+See the [[file:docs/PPV\ Tutorial.ipynb][tutorial notebook]] in the =docs= directory.
 
 
 Let's assume that you have a list of targets with numpy arrays =RA=, =Dec=, and =catalogIDs= representing the positions and catalogDB IDs, respecitively.
