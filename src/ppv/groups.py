@@ -32,7 +32,7 @@ class Field:
         self._platenums = plates_of_field(self.name)
         self._summary_indx = indx_in_plateruns(self.name)
         self.ra, self.dec = self._center()
-        self.center = SkyCoord(self.ra, self.dec,
+        self.center = SkyCoord(self.ra * u.deg, self.dec * u.deg,
                                obstime=Time(2015.5, format='decimalyear'))
         # TODO check epoch of field designation
         self.platerun, self.programname = self.meta()
@@ -44,7 +44,7 @@ class Field:
         return f'Field({self.name!r})'
 
     def __str__(self):
-        first = f'Field: {self.name!r}, RA: {self.ra!r}, Dec: {self.dec!r}'
+        first = f'Field: {self.name!r}, RA: {self.ra!r}, Dec: {self.dec!r}\n'
         second = f'Plate Numbers: {self._platenums!r}'
         return first + second
 
@@ -55,7 +55,7 @@ class Field:
     def _center(self):
         ra = allplate_summary['raCen'][self._summary_indx][0]
         dec = allplate_summary['decCen'][self._summary_indx][0]
-        return ra * u.deg, dec * u.deg
+        return ra, dec
 
     def _construct_skycoords(self):
         self._plugcoords = [SkyCoord(phole['target_ra'] * u.degree,
