@@ -75,7 +75,7 @@ class Targets:
         """
         return self.coords.separation(center) < radius
 
-    def available_in(self, FieldorPlate):
+    def _available_in_field(self, FieldorPlate):
         """
         Given a Field or Plate instance, return a boolean array of target members
         that could be observed. Availability based on position only.
@@ -91,13 +91,22 @@ class Targets:
             self._available_indx[FieldorPlate.name] = indx
         return indx
 
-    def available_in_platerun(self, platerun_):
+    def _available_in_platerun(self, platerun_):
         """
         Given a platerun, return a boolean array of all members that could be observed
         in any field of the platerun.
         """
         indx_all = [self.available_in(field) for field in platerun_.fields]
         return np.bitwise_or.reduce(indx_all)
+
+    def available_in(self, pl_field_plrun):
+        """
+        Given a Plate, Field, or PlateRun instance, return a boolean array
+        of target members that could be observed. Availability based on position only.
+        """
+        if isinstance(pl_field_plrun, groups.Platerun):
+            return self._available_in_platerun(pl_field_plrun)
+        return self._available_in_field(pl_field_plrun)  #  SAME logice for plate/field
 
     def _within(self, catalogIDs):
         """
