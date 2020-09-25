@@ -72,23 +72,6 @@ The Targets class is a container for your targets of interest and interfaces wit
 * Basic Usage
 See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory.
 
-
-Let's assume that you have a list of targets with numpy arrays =RA=, =Dec=, and =catalogIDs= representing the positions and catalogDB IDs, respecitively.
-You want to know which of these stars *could* have been targeted within platerun =2020.08.c.bhm-mwm=.
-
-You will need to constuct a `Targets` object to contain information about your targets and a `Platerun` object to interface with; e.g.,
-
-#+BEGIN_SRC python
-import ppv
-targets = ppv.Targets(RA, Dec, catalogid=catalogIDs)
-platerun = ppv.Platerun('2020.08.c.bhm-mwm')
-#+END_SRC python
-
-To get boolean mask (True/False array with the same shape as =catalogIDs=) of the available targets,\\
-~targets.available_in(platerun)~
-
-
-
 * FAQs
 *** I don't have an account at Utah and/or I can't get the plugHoles files.
 If you plan to checking SDSS-V targeting long term, I strongly suggest you contact Joel Brownstein (check if there is a page somewhere) get access. \\
@@ -99,7 +82,11 @@ Look at the tutorial notebook (under Targets) to see if downloading one of the c
 Awesome, let's make it work. Submit an issue!
 
 * TODOs
-1) Make it easy to get Gaia source IDs for all targets.
-2) Get documentation into ReadtheDocs format.
-3) Make it so new plateruns don't require pulling the repository.
-4) Much more.
+1) Sort targets and plugHoles tables by catalogID (after making sure that no info is lost in plugHoles files)
+2) Make it easy to get Gaia source IDs for all targets.
+3) Get documentation into ReadtheDocs format.
+4) Make it so new plateruns don't require pulling the repository.
+5) Better Targets constuctor.
+6) Interface with five_plates field files.
+7) Make available_in work for plate runs.
+8) Much more.
