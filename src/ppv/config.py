@@ -6,11 +6,6 @@ from pathlib import Path
 import os
 import sys
 
-## Fixed relative path
-_plansummary = Path(__file__).parent / 'data/platePlans_sdss5.fits'
-##
-
-
 ## Configuration
 _config_path = Path.home() / '.config' / 'ppv_setup.ini'
 _filename = _config_path.name

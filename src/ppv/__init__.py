@@ -12,6 +12,6 @@ try:
     from .plate import Plate
     from .targets import Targets
     from .groups import Field, Platerun
-except AttributeError:  # Configuration file was missing
+except (AttributeError, ImportError) :  # Configuration file was missing / testing
     pass
 

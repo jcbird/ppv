@@ -6,6 +6,13 @@ from pathlib import Path
 import os
 
 
+def platePlans_par():
+    return config.plate_dir / 'platePlans.par'
+
+def plate_plans():
+    return config.plate_dir / 'platePlans_sdss5.fits'
+
+
 def platenum_as_str(platenum):
     """String representation of platenumber with leading zeros if necessary.
 
