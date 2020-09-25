@@ -17,7 +17,7 @@ class Targets:
     assigned: relative to the Field
     """
 
-    def __init__(self, ra, dec, catalogid, ancillary=None, epoch=2015.5):
+    def __init__(self, ra, dec, catalogid, data=None, epoch=2015.5):
         """Constructor.
         ancillary is best used as the full table where 'ra' and 'dec' came from. Needs to be a one to one match with 'ra', 'dec'.
 
@@ -34,10 +34,11 @@ class Targets:
         epoch :
             epoch
         """
+        # TODO find a better way to construct 'data' when ancillary is None
         self.epoch = epoch
         self.coords = self._construct_skycoords(ra, dec)
         self.catalogid = catalogid
-        self.data = ancillary
+        self.data = data
         self._available_indx = {}
         self._assigned_indx = {}
         self._input_indx = {}
