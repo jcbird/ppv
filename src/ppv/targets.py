@@ -43,6 +43,12 @@ class Targets:
         self._input_indx = {}
         self._clean_indx = {}
 
+    def __repr__(self):
+        return f'Targets: {self.catalogid!r}'
+
+    def __repr__(self):
+        return f'{len(self.catalogid)} targets with IDs: {self.catalogid!r}'
+
     def _construct_skycoords(self, ra, dec):
         print('Assuming RA, Dec are in degrees and {} epoch'.format(self.epoch))
         return SkyCoord(ra=ra * u.degree, dec=dec * u.degree,

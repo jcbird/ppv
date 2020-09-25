@@ -93,6 +93,8 @@ To get boolean mask (True/False array with the same shape as =catalogIDs=) of th
 *** I don't have an account at Utah and/or I can't get the plugHoles files.
 If you plan to checking SDSS-V targeting long term, I strongly suggest you contact Joel Brownstein (check if there is a page somewhere) get access. \\
 In the meantime, submit an issue above with "No Utah account" as the title. I will send you a tarball with the correct files and directory structure.
+*** I don't know the catalogIDs of the targets I want to check.
+Look at the tutorial notebook (under Targets) to see if downloading one of the carton targetDB files is helpful. If not, create an issue and I will help asap!
 *** Something doesn't work, I wish ~ppv~ did THIS, why does ~ppv~ do THIS, I want to do X with ~ppv~, or I wish something in ~ppv~ had a different name.
 Awesome, let's make it work. Submit an issue!
 
