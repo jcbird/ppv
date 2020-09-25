@@ -1,32 +1,32 @@
 
 # Table of Contents
 
-1.  [Installation](#org26a20b1)
-2.  [Configuration and Data Files](#org050f07d)
-    1.  [Copy `ppv_setup.ini` to home/.config and edit](#org525d270)
-    2.  [Plate directory and PlugHoles files](#org4c37898)
-3.  [Concepts](#orgaaf285e)
-        1.  [Plate Summary](#orgbd0c26a)
-        2.  [Plate](#org518da81)
-        3.  [Field](#orge1c1186)
-        4.  [Platerun](#org6ceba34)
-        5.  [Targets](#orgd2a5023)
-4.  [Basic Usage](#orgd9a6323)
-5.  [FAQs](#org25d487a)
-        1.  [I don&rsquo;t have an account at Utah and/or I can&rsquo;t get the plugHoles files.](#org37d08c1)
-        2.  [I don&rsquo;t know the catalogIDs of the targets I want to check.](#orga4029df)
-        3.  [Something doesn&rsquo;t work, I wish `ppv` did THIS, why does `ppv` do THIS, I want to do X with `ppv`, or I wish something in `ppv` had a different name.](#org72796f6)
-6.  [TODOs](#org29f4ef5)
+1.  [Installation](#org803a174)
+2.  [Configuration and Data Files](#org678efcc)
+    1.  [Copy `ppv_setup.ini` to home/.config and edit](#orga026494)
+    2.  [Plate directory and PlugHoles files](#org3619343)
+3.  [Concepts](#org9729042)
+        1.  [Plate Summary](#orga2df6cf)
+        2.  [Plate](#orga44984e)
+        3.  [Field](#orgaa4449d)
+        4.  [Platerun](#org88de5b6)
+        5.  [Targets](#org8213aed)
+4.  [Basic Usage](#orge874063)
+5.  [FAQs](#org35f5eba)
+        1.  [I don&rsquo;t have an account at Utah and/or I can&rsquo;t get the plugHoles files.](#org54a17d8)
+        2.  [I don&rsquo;t know the catalogIDs of the targets I want to check.](#org9055e80)
+        3.  [Something doesn&rsquo;t work, I wish `ppv` did THIS, why does `ppv` do THIS, I want to do X with `ppv`, or I wish something in `ppv` had a different name.](#org656ea11)
+6.  [TODOs](#org8aa3540)
 
 Tools for dealing with SDSS-V plate files and plate runs.
 
 
-<a id="org26a20b1"></a>
+<a id="org803a174"></a>
 
 # Installation
 
 -   **Setup environment** (optional, but recommended)   
-    If fulfilling the [Requirements](#orgd03fe7f) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with
+    If fulfilling the [Requirements](#org71323aa) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with
     
         conda env create -f ppv_sdss_min.yml  # creates conda environment
         conda activate ppv  # activates conda environment
@@ -39,14 +39,14 @@ Tools for dealing with SDSS-V plate files and plate runs.
         cd ppv
         python setup.py install  # install ==ppv== package
 
--   **Requirements** <a id="orgd03fe7f"></a>
+-   **Requirements** <a id="org71323aa"></a>
     -   python (>3.5, 3.8 preferred) [if this frightens you, read on]
     -   astropy
     -   [pydl](https://github.com/jcbird/ppv.git) (development version)
         Package from Benjamin Weaver for dealing with yanny files.
 
 
-<a id="org050f07d"></a>
+<a id="org678efcc"></a>
 
 # Configuration and Data Files
 
@@ -75,7 +75,7 @@ The contents of `ppv_setup.ini`
 <tbody>
 <tr>
 <td class="org-left"><code>plate_dir</code></td>
-<td class="org-left">/home/jquark/obsdata/plates</td>
+<td class="org-left"><code>/home/jquark/obsdata/plates</code></td>
 <td class="org-left">absolute path to directory to store plate files</td>
 </tr>
 
@@ -94,7 +94,7 @@ Notes:
 -   plate<sub>dir</sub> does not need to exist. `ppv` will automatically create this directory if needed.
 
 
-<a id="org525d270"></a>
+<a id="orga026494"></a>
 
 ## Copy `ppv_setup.ini` to home/.config and edit
 
@@ -107,68 +107,68 @@ You MUST edit the `ppv_setup.ini` and copy it to the `.config` directory in your
 and edit accordingly.
 
 
-<a id="org4c37898"></a>
+<a id="org3619343"></a>
 
 ## Plate directory and PlugHoles files
 
 If you have an account at Utah and put the `ppv_setup.ini` file in your `$HOME/.config` directory, you are good to go! `ppv` will take of everything!
 
 
-<a id="orgaaf285e"></a>
+<a id="org9729042"></a>
 
 # Concepts
 
 There are four basic objects in the `ppv` package: `Plate`, `Field`, `Platerun`, and `Targets`. There is also a convenient plate summmary table.
 
 
-<a id="orgbd0c26a"></a>
+<a id="orga2df6cf"></a>
 
 ### Plate Summary
 
 Table accessible via `ppv.allplate_summary`. Each row corresponds to a single plate and contains, amongst other columns, the plate id, position of the plate center, the program name driving plate design, the corresponding field (name), and the platerun.
 
 
-<a id="org518da81"></a>
+<a id="orga44984e"></a>
 
 ### Plate
 
 One to one correspondance with a plate. A `Plate` is identified by its unique plate id (an integer; e.g., 15004).
 
 
-<a id="orge1c1186"></a>
+<a id="orgaa4449d"></a>
 
 ### Field
 
 A field is defined by a field name (a string; e.g., `AQM_001.85+26.44`) and represents one field of view on the sky. All plates belong to one field. All fields contain one or more plates.
 
 
-<a id="org6ceba34"></a>
+<a id="org88de5b6"></a>
 
 ### Platerun
 
 A platerun is definied by its name (a string; e.g., 2020.08.c.bhm-mwm). A platerun is a collection of fields (and thus plates) to be a drilled for a given observing run.
 
 
-<a id="orgd2a5023"></a>
+<a id="org8213aed"></a>
 
 ### Targets
 
 The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
 
-<a id="orgd9a6323"></a>
+<a id="orge874063"></a>
 
 # Basic Usage
 
 See the [tutorial notebook](docs/PPV_tutorial.ipynb) in the `docs` directory.
 
 
-<a id="org25d487a"></a>
+<a id="org35f5eba"></a>
 
 # FAQs
 
 
-<a id="org37d08c1"></a>
+<a id="org54a17d8"></a>
 
 ### I don&rsquo;t have an account at Utah and/or I can&rsquo;t get the plugHoles files.
 
@@ -178,21 +178,21 @@ PLEASE DO THIS!
 If there is a delay in getting an account for any reason, submit an issue with &ldquo;No Utah account&rdquo; as the title. I will send you a tarball with the correct files and directory structure.
 
 
-<a id="orga4029df"></a>
+<a id="org9055e80"></a>
 
 ### I don&rsquo;t know the catalogIDs of the targets I want to check.
 
 Look at the tutorial notebook (under Targets) to see if downloading one of the carton targetDB files is helpful. If not, create an issue and I will help asap!
 
 
-<a id="org72796f6"></a>
+<a id="org656ea11"></a>
 
 ### Something doesn&rsquo;t work, I wish `ppv` did THIS, why does `ppv` do THIS, I want to do X with `ppv`, or I wish something in `ppv` had a different name.
 
 Awesome, let&rsquo;s make it work. Submit an issue!
 
 
-<a id="org29f4ef5"></a>
+<a id="org8aa3540"></a>
 
 # TODOs
 

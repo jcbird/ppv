@@ -33,10 +33,10 @@ Tools for dealing with SDSS-V plate files and plate runs.
 ~ppv~ interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [[file:ppv_setup.ini][=ppv_setup.ini=]]. This setup file is short, but will grow in future releases.
 
 The contents of ~ppv_setup.ini~
-| parameter   | default value               | description                                     |
-|-------------+-----------------------------+-------------------------------------------------|
-| =plate_dir= | /home/jquark/obsdata/plates | absolute path to directory to store plate files |
-| =sdss_org=  | =username_at_utah=          | username for sdss.org server at Utah            |
+| parameter   | default value                 | description                                     |
+|-------------+-------------------------------+-------------------------------------------------|
+| =plate_dir= | =/home/jquark/obsdata/plates= | absolute path to directory to store plate files |
+| =sdss_org=  | =username_at_utah=            | username for sdss.org server at Utah            |
 
 Notes:
 - file is ONLY read locally.
