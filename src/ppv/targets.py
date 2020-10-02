@@ -1,4 +1,5 @@
 from . import groups
+from . import fiveplates
 import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
@@ -104,7 +105,8 @@ class Targets:
         Given a Plate, Field, or PlateRun instance, return a boolean array
         of target members that could be observed. Availability based on position only.
         """
-        if isinstance(pl_field_plrun, groups.Platerun):
+        if (isinstance(pl_field_plrun, groups.Platerun) |
+            isinstance(pl_field_plrun, fiveplates.Platerun)):
             return self._available_in_platerun(pl_field_plrun)
         return self._available_in_field(pl_field_plrun)  #  SAME logice for plate/field
 
