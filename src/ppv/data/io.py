@@ -37,7 +37,9 @@ def _parse_plate_plans():
 
     sdss5_plates = platePlans[is_sdss5_plate]
     out_filename = paths.plate_plans()
-
+    # delete the file if it exists
+    if out_filename.exists():
+        os.remove(os.fspath(out_filename))
     sdss5_plates.write(out_filename, overwrite='True', format='fits')
     print(f'SDSS-V platePlans table written to {out_filename}')
     return None
@@ -53,5 +55,5 @@ def load_plansummary():
             print(f'AND an error occured when trying to execute either\n')
             print(f'util.download.plate_plans OR _parse_plate_plans\n')
     else:
-        pass
+        _parse_plate_plans()  # already there, parse it
     return Table.read(os.fspath(paths.plate_plans()), format='fits')

@@ -1,5 +1,5 @@
 from . import allplate_summary, _names_array, _platerun_array
-from . import plate
+from . import plate, available_plateruns
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
@@ -156,6 +156,8 @@ class Platerun:
     """
 
     def __init__(self, run_name):
+        if _check_platerun(run_name):
+            pass  # all is well, platerun available
         self.name = run_name
         self.fieldnames = self._get_fields()
 
@@ -218,5 +220,34 @@ class Platerun:
         Return rows of the Platerun targets table given a list of catalogIDs
         """
         return self.targets[self._contains(catalogIDs)]
+
+
+class PlateRunMissingError(Exception):
+    def __init__(self, run_name):
+        if run_name:
+            self.message = run_name
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            first = f'\nPlateRunMissingError, {self.message} is not an available platerun'
+            second = f'\n ======================================================== \n'
+            third = ' Run ppv.update() to update your platerun summary file and try again.'
+            fourth = f'\n ======================================================== \n'
+            return first + second + third + fourth
+            # return f'PlateRunMissingError, {self.message} is not an available platerun'
+        else:
+            return 'PlateRunMissingError has been raised'
+
+
+def _check_platerun(run_name):
+    if run_name in available_plateruns:
+        return True     # All is well
+    else:  # platerun NOT available
+        raise PlateRunMissingError(run_name)
+
+
+
 
 
