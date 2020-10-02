@@ -4,6 +4,8 @@ functions for loading (writing?) data from disk
 from ..util import paths, download
 from .. import config
 from astropy.table import Table
+from astropy.io import ascii
+from zipfile import ZipFile
 import os
 import numpy as np
 
@@ -57,3 +59,38 @@ def load_plansummary():
     else:
         _parse_plate_plans()  # already there, parse it
     return Table.read(os.fspath(paths.plate_plans()), format='fits')
+
+
+# TODO Make summary file loading more flexible. ARRRGHHH!
+def load_fiveplates_summary(platerun):
+    """
+    This is hard-coded for 2020.08.x.mwm-bhm!!! Need to make the file format
+    machine-readable!
+    """
+    summary_file = paths.fiveplates_summary(platerun)
+    if summary_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(summary_file))
+    return ascii.read(os.fspath(summary_file), header_start=1,
+                      format='commented_header')
+
+
+def load_fiveplates_field(platerun, field_file_string):
+    """
+    path to zip file containing fields_files in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    field_file_string : str
+        typically the output of paths.fiveplates_clean_field_file OR
+        paths.fiveplates_field_file 
+    """
+    fields_zip = paths.fiveplates_fieldfiles(platerun)
+
+    with ZipFile(os.fspath(fields_zip)) as fp_zip:
+        with fp_zip.open(field_file_string, 'r') as field:
+            data = Table.read(field, format='ascii.commented_header')
+    return data
