@@ -46,7 +46,7 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
     print('Running command:')
     print(rsync_cmd)
     rsync_cmd = shlex.split(rsync_cmd)
-    subprocess.check_call(rsync_cmd)
+    subprocess.run(rsync_cmd, shell=True)
     return None
 
 
@@ -84,7 +84,7 @@ def plate_plans(dry_run=False, execute=True):
     print('Running command:')
     print(rsync_cmd)
     rsync_cmd = shlex.split(rsync_cmd)
-    subprocess.check_call(rsync_cmd)
+    subprocess.run(rsync_cmd, shell=True)
     return None
 
 
