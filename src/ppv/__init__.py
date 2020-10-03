@@ -29,6 +29,8 @@ def update():
     available_plateruns = list(set(_platerun_array))
     print('Plate plans summary file updated to current version.')
 
+    # Need to update plugholes files too
+
     return None
 
 
