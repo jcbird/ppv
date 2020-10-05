@@ -22,6 +22,7 @@ def _run_rsync(rsync_command_string):
     rsync_child.sendline(utah_passwd)
     rsync_child.wait()
     rsync_child.close()
+    del utah_passwd  # get rid of any reference to password
     if rsync_child.exitstatus == 0:
         print('rsync command ran successfully.')
     return rsync_child
