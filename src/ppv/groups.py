@@ -1,5 +1,5 @@
-from . import allplate_summary, _names_array, _platerun_array
-from . import plate, available_plateruns
+from . import ppv
+from . import plate
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
@@ -7,15 +7,21 @@ from astropy.time import Time
 from astropy.table import vstack, Column
 
 
+def available_plateruns():
+    return ppv.available_plateruns
+
+
 def indx_in_plateruns(fieldname):
-    return np.where(_names_array == fieldname)[0]
+    return np.where(ppv._names_array == fieldname)[0]
+
 
 def plates_of_field(fieldname):  # returns a list
-    plates = allplate_summary['plateid'][indx_in_plateruns(fieldname)]
+    plates = ppv._allplate['plateid'][indx_in_plateruns(fieldname)]
     return plates.tolist()
 
+
 def in_platerun(run_name):
-    return np.where(_platerun_array == run_name)[0]
+    return np.where(ppv._platerun_array == run_name)[0]
 
 
 class Field:
@@ -25,7 +31,7 @@ class Field:
 
     def __init__(self, fieldname):
         """
-        fieldname is string. Look for fieldnames in allplate_summary OR
+        fieldname is string. Look for fieldnames in ppv._allplate OR
         in plate_run.fieldnames
         """
         self.name = fieldname
@@ -53,8 +59,8 @@ class Field:
         return self._plates
 
     def _center(self):
-        ra = allplate_summary['raCen'][self._summary_indx][0]
-        dec = allplate_summary['decCen'][self._summary_indx][0]
+        ra = ppv._allplate['raCen'][self._summary_indx][0]
+        dec = ppv._allplate['decCen'][self._summary_indx][0]
         return ra, dec
 
     def _construct_skycoords(self):
@@ -129,8 +135,8 @@ class Field:
         return self.targets[self._contains(catalogIDs)]
 
     def meta(self):
-        prun = allplate_summary['platerun'][self._summary_indx][0]
-        programname = allplate_summary['programname'][self._summary_indx][0]
+        prun = ppv._allplate['platerun'][self._summary_indx][0]
+        programname = ppv._allplate['programname'][self._summary_indx][0]
         return prun, programname
 
     def contains(self, catIDs):
@@ -163,12 +169,12 @@ class Platerun:
 
     def _get_fields(self):
         idx = in_platerun(self.name)
-        names = allplate_summary['name'].astype('U')[idx]
+        names = ppv._allplate['name'].astype('U')[idx]
         return np.unique(names)  # no field repeats
 
     @property
     def platesummary(self):
-        return allplate_summary[in_platerun(self.name)]
+        return ppv._allplate[in_platerun(self.name)]
 
 
     def load_fields(self):
@@ -242,7 +248,7 @@ class PlateRunMissingError(Exception):
 
 
 def _check_platerun(run_name):
-    if run_name in available_plateruns:
+    if run_name in available_plateruns():
         return True     # All is well
     else:  # platerun NOT available
         raise PlateRunMissingError(run_name)
