@@ -58,6 +58,7 @@ and edit accordingly.
 [[~five_plates~][=https://github.com/sdss/five_plates/tree/master/python=]] produces the input files for the plate design code. ~ppv~ can interact with these "field files" as well.
 
 - You *MUST* clone the ~five_plates~ to the local machine running ~ppv~ AND edit your ~ppv_setup.ini~ file to point to the ~plateruns~ directory inside the repository. Be sure to perform  a ~git pull~ when necessary to get the latest plateruns files.
+- See the [[file:docs/PPV_fiveplates.ipynb][=five_plates= tutorial notebook]]  in the =docs= directory for an example of this.
 
 ** Plate directory and PlugHoles files
 If you have an account at Utah and put the ~ppv_setup.ini~ file in your =$HOME/.config= directory, you are good to go! ~ppv~ will take of everything!
