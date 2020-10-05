@@ -3,11 +3,28 @@ from .. import config
 import os
 import subprocess
 import shlex
+import getpass
+import pexpect
 
 _base_server = 'apogee.sdss.org'
 _base_url = '///uufs/chpc.utah.edu/common/home/sdss05/software/svn.sdss.org/data/sdss/platelist/trunk'
 _plates = 'plates'
 
+
+def _run_rsync(rsync_command_string):
+    print('Running command:')
+    print(rsync_command_string)
+    print(f'\n\nEnter password for {config.utah_username}: ')
+    utah_passwd = getpass.getpass()
+
+    rsync_child = pexpect.spawn(rsync_command_string)
+    rsync_child.expect('[P/p]assword:')
+    rsync_child.sendline(utah_passwd)
+    rsync_child.wait()
+    rsync_child.close()
+    if rsync_child.exitstatus == 0:
+        print('rsync command ran successfully.')
+    return rsync_child
 
 
 def plugHoles_batch(plate_batch, dry_run=False, execute=True):
@@ -43,10 +60,22 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
     if execute is False:
         return rsync_cmd
 
-    print('Running command:')
-    print(rsync_cmd)
-    rsync_cmd = shlex.split(rsync_cmd)
-    subprocess.run(rsync_cmd, shell=True)
+    rsync_pipe = _run_rsync(rsync_cmd)
+
+    # print('Running command:')
+    # print(rsync_cmd)
+    # print(f'\n\nEnter password for {config.utah_username}: ')
+    # utah_passwd = getpass.getpass()
+
+    # rsync_child = pexpect.spawn(rsync_cmd)
+    # rsync_child.expect('[P/p]assword:')
+    # rsync_child.sendline(utah_passwd)
+    # rsync_child.wait()
+    # rsync_child.close()
+    # if rsync_child.exitstatus == 0:
+    #     print('rsync command ran successfully.')
+    # # rsync_cmd = shlex.split(rsync_cmd)
+    # # subprocess.run(rsync_cmd, shell=True)
     return None
 
 
@@ -81,10 +110,11 @@ def plate_plans(dry_run=False, execute=True):
     if execute is False:
         return rsync_cmd
 
-    print('Running command:')
-    print(rsync_cmd)
-    rsync_cmd = shlex.split(rsync_cmd)
-    subprocess.run(rsync_cmd, shell=True)
+    rsync_pipe = _run_rsync(rsync_cmd)
+    # print('Running command:')
+    # print(rsync_cmd)
+    # rsync_cmd = shlex.split(rsync_cmd)
+    # subprocess.run(rsync_cmd, shell=True)
     return None
 
 
