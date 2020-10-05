@@ -1,5 +1,4 @@
 from .. import config
-
 import os
 import subprocess
 import shlex
@@ -11,12 +10,27 @@ _base_url = '///uufs/chpc.utah.edu/common/home/sdss05/software/svn.sdss.org/data
 _plates = 'plates'
 
 
-def _run_rsync(rsync_command_string):
+
+def _rsync_task(rsync_command_string):
+    """
+    prints out rsync command, gets password, and executes.
+    Usefuly for single rsync tasks.
+    """
     print('Running command:')
     print(rsync_command_string)
+    utah_passwd = _ask_password()
+    rsync_pipe = _run_rsync(rsync_command_string, utah_passwd)
+    del utah_passwd  # better to do this, no reference
+    return rsync_pipe
+
+
+def _ask_password():
     print(f'\n\nEnter password for {config.utah_username}: ')
     utah_passwd = getpass.getpass()
+    return utah_passwd
 
+
+def _run_rsync(rsync_command_string, utah_passwd):
     rsync_child = pexpect.spawn(rsync_command_string)
     rsync_child.expect('[P/p]assword:')
     rsync_child.sendline(utah_passwd)
@@ -28,7 +42,7 @@ def _run_rsync(rsync_command_string):
     return rsync_child
 
 
-def plugHoles_batch(plate_batch, dry_run=False, execute=True):
+def plugHoles_batch(plate_batch, dry_run=False, execute=True, output=False):
     """
     Will download the appropriate directories (matching dir structure at Utah)
     and plugHoles-*.par files.
@@ -48,7 +62,8 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
         dry_run
     execute : boolean
         execute
-
+    output : boolean
+        if output is True, return the pexpect object used to spawn rsync
     """
     _check_for_plate_dir()
     dry_opt = _get_dry_run_str(dry_run)
@@ -61,7 +76,10 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
     if execute is False:
         return rsync_cmd
 
-    rsync_pipe = _run_rsync(rsync_cmd)
+    print('Running command:')
+    print(rsync_cmd)
+    utah_passwd = _ask_password()
+    rsync_pipe = _run_rsync(rsync_cmd, utah_passwd)
 
     # print('Running command:')
     # print(rsync_cmd)
@@ -80,7 +98,7 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True):
     return None
 
 
-def plate_plans(dry_run=False, execute=True):
+def plate_plans(dry_run=False, execute=True, output=False):
     """
     Will download/update the platePlans.par file. This gives the plate summary file.
     This command will use subprocess to call rsync based on the parameters in
@@ -99,6 +117,8 @@ def plate_plans(dry_run=False, execute=True):
         dry_run
     execute : boolean
         execute
+    output : boolean
+        if output is True, return the pexpect object used to spawn rsync
     """
     _check_for_plate_dir()
     dry_opt = _get_dry_run_str(dry_run)
@@ -111,11 +131,9 @@ def plate_plans(dry_run=False, execute=True):
     if execute is False:
         return rsync_cmd
 
-    rsync_pipe = _run_rsync(rsync_cmd)
-    # print('Running command:')
-    # print(rsync_cmd)
-    # rsync_cmd = shlex.split(rsync_cmd)
-    # subprocess.run(rsync_cmd, shell=True)
+    rsync_pipe = _rsync_task(rsync_cmd)
+    if output:
+        return rsync_pipe
     return None
 
 
