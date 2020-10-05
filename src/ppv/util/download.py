@@ -31,7 +31,10 @@ def _ask_password():
 
 
 def _run_rsync(rsync_command_string, utah_passwd):
-    rsync_child = pexpect.spawn(rsync_command_string)
+    # rsync_child = pexpect.spawn(rsync_command_string)
+    shell_path = os.environ.get('SHELL')
+    rsync_child = pexpect.spawn(shell_path, ['-c', rsync_command_string])
+    # rsync_child = pexpect.spawn(rsync_command_string)
     rsync_child.expect('[P/p]assword:')
     rsync_child.sendline(utah_passwd)
     rsync_child.wait()
