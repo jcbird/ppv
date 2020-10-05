@@ -9,7 +9,7 @@ Field:
 Platerun: 
 
 """
-from . import allplate_summary, _names_array, _platerun_array
+from . import ppv
 from .data import io
 from .util import paths
 from . import config
@@ -25,7 +25,8 @@ import os
 
 # get possible plateruns
 
-available_plateruns = os.listdir(config.fiveplates_dir)
+def available_plateruns():
+    return os.listdir(config.fiveplates_dir)
 
 # TODO could abstract this by getting names of columns for each class
 # e.g., RAcol = 'RA(deg)', etc.
@@ -155,11 +156,6 @@ class Field:
         """
         return self.targets[self._contains(catalogIDs)]
 
-    # def meta(self):
-    #     prun = allplate_summary['platerun'][self._summary_indx][0]
-    #     programname = allplate_summary['programname'][self._summary_indx][0]
-    #     return prun, programname
-
     def contains(self, catIDs):
         """
         Checks for membership in a plate based on catalogID.
@@ -191,10 +187,6 @@ class Platerun:
 
     def _get_fields(self):
         return list(self.platesummary['FieldName'])
-
-    # @property
-    # def platesummary(self):
-        # return allplate_summary[in_platerun(self.name)]
 
     def load_fields(self):
         return [Field(fname, self.name) for fname in
@@ -268,7 +260,7 @@ class PlateRunMissingError(Exception):
 
 
 def _check_platerun(run_name):
-    if run_name in available_plateruns:
+    if run_name in available_plateruns():
         return True     # All is well
     else:  # platerun NOT available
         raise PlateRunMissingError(run_name)
