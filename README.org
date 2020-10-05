@@ -26,6 +26,7 @@ Tools for dealing with SDSS-V plate files and plate runs.
 - *Requirements* <<require>>
   - python (>3.5, 3.8 preferred) [if this frightens you, read on]
   - astropy
+  - pexpect (this is a dependency of ipython)
   - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
     Package from Benjamin Weaver for dealing with yanny files.
 
@@ -33,17 +34,18 @@ Tools for dealing with SDSS-V plate files and plate runs.
 ~ppv~ interacts with a number of data files and needs to know their location on disk. This is accomplished through the configuration file [[file:ppv_setup.ini][=ppv_setup.ini=]]. This setup file is short, but will grow in future releases.
 
 The contents of ~ppv_setup.ini~
-| parameter   | default value                 | description                                     |
-|-------------+-------------------------------+-------------------------------------------------|
-| =plate_dir= | =/home/jquark/obsdata/plates= | absolute path to directory to store plate files |
-| =sdss_org=  | =username_at_utah=            | username for sdss.org server at Utah            |
+| parameter        | default value                              | description                                                    |
+|------------------+--------------------------------------------+----------------------------------------------------------------|
+| =plate_dir=      | =/home/user/path/to/platedir=              | absolute path to directory to store plate files                |
+| =fiveplates_dir= | =/home/user/path/to/five_plates/plateruns= | absolute path to plateruns directory inside =five_plates= repo |
+| =sdss_org=       | =username_at_utah=                         | username for sdss.org server at Utah                           |
 
 Notes:
 - file is ONLY read locally.
-- plate_dir does not need to exist. ~ppv~ will automatically create this directory if needed.
+- =plate_dir= does not need to exist. ~ppv~ will automatically create this directory if needed.
 
 
-** Copy ~ppv_setup.ini~ to home/.config and edit
+** Copy ~ppv_setup.ini~ to ~/.config and edit
 You MUST edit the ~ppv_setup.ini~ and copy it to the ~.config~ directory in your home directory. Make this directory if necessary. Using a posix shell,
 #+BEGIN_SRC shell
 mkdir ~/.config
@@ -52,8 +54,15 @@ cp ppv_setup.ini ~/.config
 #+END_SRC
 and edit accordingly.
 
+** =five_plates= functionality
+[[~five_plates~][=https://github.com/sdss/five_plates/tree/master/python=]] produces the input files for the plate design code. ~ppv~ can interact with these "field files" as well.
+
+- You *MUST* clone the ~five_plates~ to the local machine running ~ppv~ AND edit your ~ppv_setup.ini~ file to point to the ~plateruns~ directory inside the repository. Be sure to perform  a ~git pull~ when necessary to get the latest plateruns files.
+
 ** Plate directory and PlugHoles files
 If you have an account at Utah and put the ~ppv_setup.ini~ file in your =$HOME/.config= directory, you are good to go! ~ppv~ will take of everything!
+*** run =ppv.ppv.update_platefiles()= to ensure the latest versions of all plate files.
+See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory for an example of this.
 
 * Concepts
 There are four basic objects in the ~ppv~ package: =Plate=, =Field=, =Platerun=, and =Targets=. There is also a convenient plate summmary table.
@@ -84,10 +93,10 @@ Look at the tutorial notebook (under Targets) to see if downloading one of the c
 Awesome, let's make it work. Submit an issue!
 
 * TODOs
+1) Sort targets and plugHoles tables by catalogID (after making sure that no info is lost in plugHoles files)
+2) Make it easy to get Gaia source IDs for all targets.
+3) Get documentation into ReadtheDocs format.
+4) Better Targets constuctor.
+** DONE
 1) Make functions to update platePlans summary.
-2) Sort targets and plugHoles tables by catalogID (after making sure that no info is lost in plugHoles files)
-3) Make it easy to get Gaia source IDs for all targets.
-4) Get documentation into ReadtheDocs format.
-5) Better Targets constuctor.
-6) Interface with five_plates field files.
-7) Much more.
+2) Interface with five_plates field files.
