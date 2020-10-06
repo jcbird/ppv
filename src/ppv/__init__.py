@@ -38,7 +38,7 @@ class Summary:
         return None
 
     @property
-    def allplate(self):
+    def allplate_summary(self):
         try:
             return self._allplate
         except AttributeError:

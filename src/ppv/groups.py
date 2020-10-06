@@ -16,7 +16,7 @@ def indx_in_plateruns(fieldname):
 
 
 def plates_of_field(fieldname):  # returns a list
-    plates = ppv._allplate['plateid'][indx_in_plateruns(fieldname)]
+    plates = ppv.allplate_summary['plateid'][indx_in_plateruns(fieldname)]
     return plates.tolist()
 
 
@@ -31,7 +31,7 @@ class Field:
 
     def __init__(self, fieldname):
         """
-        fieldname is string. Look for fieldnames in ppv._allplate OR
+        fieldname is string. Look for fieldnames in ppv.allplate_summary OR
         in plate_run.fieldnames
         """
         self.name = fieldname
@@ -59,8 +59,8 @@ class Field:
         return self._plates
 
     def _center(self):
-        ra = ppv._allplate['raCen'][self._summary_indx][0]
-        dec = ppv._allplate['decCen'][self._summary_indx][0]
+        ra = ppv.allplate_summary['raCen'][self._summary_indx][0]
+        dec = ppv.allplate_summary['decCen'][self._summary_indx][0]
         return ra, dec
 
     def _construct_skycoords(self):
@@ -135,8 +135,8 @@ class Field:
         return self.targets[self._contains(catalogIDs)]
 
     def meta(self):
-        prun = ppv._allplate['platerun'][self._summary_indx][0]
-        programname = ppv._allplate['programname'][self._summary_indx][0]
+        prun = ppv.allplate_summary['platerun'][self._summary_indx][0]
+        programname = ppv.allplate_summary['programname'][self._summary_indx][0]
         return prun, programname
 
     def contains(self, catIDs):
@@ -169,12 +169,12 @@ class Platerun:
 
     def _get_fields(self):
         idx = in_platerun(self.name)
-        names = ppv._allplate['name'].astype('U')[idx]
+        names = ppv.allplate_summary['name'].astype('U')[idx]
         return np.unique(names)  # no field repeats
 
     @property
     def platesummary(self):
-        return ppv._allplate[in_platerun(self.name)]
+        return ppv.allplate_summary[in_platerun(self.name)]
 
 
     def load_fields(self):
