@@ -66,20 +66,28 @@ If you have an account at Utah and put the ~ppv_setup.ini~ file in your =$HOME/.
 See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory for an example of this.
 
 * Concepts
-There are four basic objects in the ~ppv~ package: =Plate=, =Field=, =Platerun=, and =Targets=. There is also a convenient plate summmary table.
+There are four basic objects in the ~ppv~ package: =Plate=, =Field=, =Platerun=, and =Targets=. There is also a convenient plate summary table.
 
-*** Plate Summary
-Table accessible via ~ppv.allplate_summary~. Each row corresponds to a single plate and contains, amongst other columns, the plate id, position of the plate center, the program name driving plate design, the corresponding field (name), and the platerun.
-*** Plate
-One to one correspondance with a plate. A =Plate= is identified by its unique plate id (an integer; e.g., 15004).
-*** Field
+** Plate Summary
+Table accessible via ~ppv.ppv.allplate_summary~. Each row corresponds to a single plate and contains, amongst other columns, the plate id, position of the plate center, the program name driving plate design, the corresponding field (name), and the platerun.
+** Plate
+One to one correspondence with a plate. A =Plate= is identified by its unique plate id (an integer; e.g., 15004).
+** Field
 A field is defined by a field name (a string; e.g., =AQM_001.85+26.44=) and represents one field of view on the sky. All plates belong to one field. All fields contain one or more plates.
-*** Platerun
-A platerun is definied by its name (a string; e.g., 2020.08.c.bhm-mwm). A platerun is a collection of fields (and thus plates) to be a drilled for a given observing run.
-*** Targets
+** Platerun
+A platerun is defined by its name (a string; e.g., 2020.08.c.bhm-mwm). A platerun is a collection of fields (and thus plates) to be a drilled for a given observing run.
+** Targets
 The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
-* Basic Usage
+* Breaking Changes (READ)
+In the interest of speed, ~ppv~ is following the, "break early and often" maxim. Inevitably, some changes will need to occur that are not backward-compatible. Apologies for the lack of a deprecation warning! Note that the tutorial notebooks in the =docs= folder are always updated to the latest syntax. With the hope that this section stays very short, the following breaking changes need to be accounted for:
+
+| Since version or commit | Change                                                                             |
+| =v0.3=                  | list of available plateruns are now accessible via =ppv.ppv.available_plateruns()= |
+| =v0.3=                  | summary table of all plates now accessible via =ppv.ppv.allplate_summary=          |
+
+
+* Bsic Usage
 See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory.
 
 * FAQs
@@ -97,7 +105,7 @@ Awesome, let's make it work. Submit an issue!
 1) Sort targets and plugHoles tables by catalogID (after making sure that no info is lost in plugHoles files)
 2) Make it easy to get Gaia source IDs for all targets.
 3) Get documentation into ReadtheDocs format.
-4) Better Targets constuctor.
+4) Better Targets constructor.
 ** DONE
 1) Make functions to update platePlans summary.
 2) Interface with five_plates field files.
