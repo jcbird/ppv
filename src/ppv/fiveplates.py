@@ -26,7 +26,7 @@ import os
 # get possible plateruns
 
 def available_plateruns():
-    return os.listdir(config.fiveplates_dir)
+    return paths._five_plates_available_plateruns()
 
 # TODO could abstract this by getting names of columns for each class
 # e.g., RAcol = 'RA(deg)', etc.
