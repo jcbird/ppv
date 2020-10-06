@@ -2,7 +2,6 @@ from .data import io as data_io
 from .util import download, paths
 
 
-
 class Summary:
     """
     Container for important platerun summary info.
@@ -10,17 +9,18 @@ class Summary:
     """
 
     def __init__(self):
+        """
+        Constructor
+        """
         self._load()
 
     def __str__(self):
         first = f'Information container for ppv'
-        second = f'Available properties: {*self._available_commands,}'
-        return f'{first}\n{second}'
+        return f'{first}'
 
     def __repr__(self):
         first = f'Information container for ppv'
-        second = f'Available properties: {*self._available_commands,}'
-        return f'{first}\n{second}'
+        return f'{first}'
 
     def _available_commands(self):
         return [cmd for cmd in self.__dir__() if cmd[0] != '_']
@@ -59,7 +59,7 @@ class Summary:
     @property
     def available_plateruns(self):
         """
-        All fieldnames in platerun summary
+        All plateruns in platerun summary
         """
         try:
             return self._available_plateruns
