@@ -56,10 +56,10 @@ class Summary:
             self.load()
             return self._names_array
 
-    @property
     def available_plateruns(self):
         """
-        All plateruns in platerun summary
+        All plateruns in platerun summary.
+        This is a function, not a property, for consistency with ppv.five_plates.
         """
         try:
             return self._available_plateruns

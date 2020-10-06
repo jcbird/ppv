@@ -8,7 +8,7 @@ from astropy.table import vstack, Column
 
 
 def available_plateruns():
-    return ppv.available_plateruns
+    return ppv.available_plateruns()
 
 
 def indx_in_plateruns(fieldname):
