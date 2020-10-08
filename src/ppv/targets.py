@@ -1,6 +1,7 @@
 from . import groups
 from . import fiveplates
 import numpy as np
+from astropy.table import Table
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy import units as u
@@ -18,28 +19,41 @@ class Targets:
     assigned: relative to the Field
     """
 
-    def __init__(self, ra, dec, catalogid, data=None, epoch=2015.5):
-        """Constructor.
-        ancillary is best used as the full table where 'ra' and 'dec' came from. Needs to be a one to one match with 'ra', 'dec'.
+    def __init__(self, data, colnames=['catalogid', 'ra', 'dec'],
+                 epoch=2015.5):
+        """
+        Creates a targets object.
+
+        The targets object requires at least catalogIDs to work.
+        To check on target availability, RA and Dec must also be provided.
+        Any other column (if data is a table) or field (if data is a record array)
+        or key:value pair (if data is a dict) will be kept as ancillary data
+        for convenience.
+
+        Using an astropy table is by far the most robust method to construct
+        a targets object.
 
         Parameters
         ----------
-        ra : array-like
-            Right Ascension
-        dec : array-like
-            Declination
-        catalogid : array-like
-            catalogid (usually from targetDB output)
-        ancillary : table or record array
-            usually the targetDB table corresponding to the carton of interst
-        epoch :
-            epoch
+        data : astropy table, numpy record array, or dict
+            N x C in shape, where N is the number of targets and C is the number
+            of different columns.
+        colnames : list of strings
+            List of column/field names corresponding to the catalogID (required)
+            and RA, Dec (optional, but recommended) of the targets.
+            *Order is fixed and MUST follow [catalogID, RA, Dec] format.*
+        epoch : int
+            Epoch of target positions.
         """
-        # TODO find a better way to construct 'data' when ancillary is None
         self.epoch = epoch
-        self.coords = self._construct_skycoords(ra, dec)
-        self.catalogid = catalogid
-        self.data = data
+        self._colnames = {'catalogid': colnames[0],
+                          'ra': colnames[1],
+                          'dec': colnames[2]}
+        self.data = self._make_table(data)
+        ### self.ra = self.
+        self.catalogid = self._get('catalogid')
+        self.coords = self._construct_skycoords(self._get('ra'),
+                                                self._get('dec'))
         self._available_indx = {}
         self._assigned_indx = {}
         self._input_indx = {}
@@ -50,6 +64,21 @@ class Targets:
 
     def __repr__(self):
         return f'{len(self.catalogid)} targets with IDs: {self.catalogid!r}'
+
+    def _make_table(self, data):
+        """
+        Converts to astropy table AND sorts all by catalogID.
+        The sorting is useful for get_info method (and matching plate files).
+        """
+        tab = Table(data)
+        tab.sort(self._colnames['catalogid'])
+        return tab
+
+    def _get(self, name):
+        """
+        Maybe column names
+        """
+        return self.data[self._colnames[name]]
 
     def _construct_skycoords(self, ra, dec):
         print('Assuming RA, Dec are in degrees and {} epoch'.format(self.epoch))
