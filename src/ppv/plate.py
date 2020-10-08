@@ -139,6 +139,7 @@ class Plate():
                               name='plate',
                               dtype=np.int)
         table.add_column(plate_column)
+        table.sort('catalogid')   # sort by catalogID
         return table
 
     def columns(self):
