@@ -110,6 +110,7 @@ class Field:
                               name='field',
                               dtype='S200')
         table.add_column(field_column)
+        table.sort('catalogid')   # sort by catalogID
         return table
 
     def _contains(self, catIDs):
@@ -203,6 +204,7 @@ class Platerun:
         """
 
         table = vstack([field.targets for field in self.fields])
+        table.sort('catalogid')   # sort by catalogID
         return table
 
     def _contains(self, catIDs):
