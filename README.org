@@ -65,6 +65,15 @@ If you have an account at Utah and put the ~ppv_setup.ini~ file in your =$HOME/.
 *** run =ppv.ppv.update_platefiles()= to ensure the latest versions of all plate files.
 See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory for an example of this.
 
+* Breaking Changes (PLEASE READ)
+In the interest of speed, ~ppv~ is following the, "break early and often" maxim. Inevitably, some changes will need to occur that are not backward-compatible. Apologies for the lack of a deprecation warning! Note that the tutorial notebooks in the =docs= folder are always updated to the latest syntax. With the hope that this section stays very short, the following breaking changes need to be accounted for:
+
+| Since version or commit | Change                                                                                 |
+| =v0.3=                  | list of available plateruns are now accessible via =ppv.ppv.available_plateruns()=     |
+| =v0.3=                  | summary table of all plates now accessible via =ppv.ppv.allplate_summary=              |
+| =v0.35=                 | =ppv.targets.Targets=   constructor now just takes table and, optionally, column names |
+
+
 * Concepts
 There are four basic objects in the ~ppv~ package: =Plate=, =Field=, =Platerun=, and =Targets=. There is also a convenient plate summary table.
 
@@ -79,15 +88,7 @@ A platerun is defined by its name (a string; e.g., 2020.08.c.bhm-mwm). A plateru
 ** Targets
 The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
-* Breaking Changes (READ)
-In the interest of speed, ~ppv~ is following the, "break early and often" maxim. Inevitably, some changes will need to occur that are not backward-compatible. Apologies for the lack of a deprecation warning! Note that the tutorial notebooks in the =docs= folder are always updated to the latest syntax. With the hope that this section stays very short, the following breaking changes need to be accounted for:
-
-| Since version or commit | Change                                                                             |
-| =v0.3=                  | list of available plateruns are now accessible via =ppv.ppv.available_plateruns()= |
-| =v0.3=                  | summary table of all plates now accessible via =ppv.ppv.allplate_summary=          |
-
-
-* Bsic Usage
+* Basic Usage
 See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory.
 
 * FAQs
