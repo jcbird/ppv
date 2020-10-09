@@ -27,7 +27,7 @@ Tools for dealing with SDSS-V plate files and plate runs.
   - python (>3.5, 3.8 preferred) [if this frightens you, read on]
   - astropy
   - pexpect (this is a dependency of ipython)
-  - [[https://github.com/jcbird/ppv.git][pydl]] (development version)
+  - [[https://github.com/weaverba137/pydl][pydl]]  (development version)
     Package from Benjamin Weaver for dealing with yanny files.
 
 * Configuration and Data Files

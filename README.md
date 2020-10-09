@@ -1,38 +1,38 @@
 
 # Table of Contents
 
-1.  [Installation](#org642288a)
-2.  [Configuration and Data Files](#orgd33bf07)
-    1.  [Copy `ppv_setup.ini` to ~/.config and edit](#org83ae075)
-    2.  [`five_plates` functionality](#org0a66b5d)
-    3.  [Plate directory and PlugHoles files](#org68bdc22)
-        1.  [run `ppv.ppv.update_platefiles()` to ensure the latest versions of all plate files.](#orga112a91)
-3.  [Breaking Changes (PLEASE READ)](#orgb825fff)
-4.  [Concepts](#org1a42d67)
-    1.  [Plate Summary](#org942c269)
-    2.  [Plate](#org608f842)
-    3.  [Field](#orgd1bf58a)
-    4.  [Platerun](#org92d8d68)
-    5.  [Targets](#org8f715b1)
-5.  [Basic Usage](#org3da2f2e)
-    1.  [See the tutorial notebook in the `docs` directory.](#orga8a3cfc)
-    2.  [Specific example notebook with 2020.10.a.mwm-bhm plate run](#orgf1ad5ef)
-6.  [FAQs](#orgd8b4a92)
-        1.  [I don&rsquo;t have an account at Utah and/or I can&rsquo;t get the plugHoles files.](#org6c80bcf)
-        2.  [I don&rsquo;t know the catalogIDs of the targets I want to check.](#org0c6c07d)
-        3.  [Something doesn&rsquo;t work, I wish `ppv` did THIS, why does `ppv` do THIS, I want to do X with `ppv`, or I wish something in `ppv` had a different name.](#org0f0bc08)
-7.  [TODOs](#org7027b87)
-    1.  [DONE](#org7f216b0)
+1.  [Installation](#org3915932)
+2.  [Configuration and Data Files](#org27e018a)
+    1.  [Copy `ppv_setup.ini` to ~/.config and edit](#org1860e88)
+    2.  [`five_plates` functionality](#orgf24d564)
+    3.  [Plate directory and PlugHoles files](#org55f7a76)
+        1.  [run `ppv.ppv.update_platefiles()` to ensure the latest versions of all plate files.](#org58b7e97)
+3.  [Breaking Changes (PLEASE READ)](#orgf4e65a4)
+4.  [Concepts](#org391dac5)
+    1.  [Plate Summary](#orga635f42)
+    2.  [Plate](#org70f3142)
+    3.  [Field](#orgcf323b6)
+    4.  [Platerun](#org3ab2f1b)
+    5.  [Targets](#orgb6c82d9)
+5.  [Basic Usage](#orgc269140)
+    1.  [See the tutorial notebook in the `docs` directory.](#orgc7dd845)
+    2.  [Specific example notebook with 2020.10.a.mwm-bhm plate run](#org0a495ed)
+6.  [FAQs](#org5b045db)
+        1.  [I don&rsquo;t have an account at Utah and/or I can&rsquo;t get the plugHoles files.](#org5708348)
+        2.  [I don&rsquo;t know the catalogIDs of the targets I want to check.](#orgc1920eb)
+        3.  [Something doesn&rsquo;t work, I wish `ppv` did THIS, why does `ppv` do THIS, I want to do X with `ppv`, or I wish something in `ppv` had a different name.](#org2d6f1e3)
+7.  [TODOs](#org8431533)
+    1.  [DONE](#org115c4df)
 
 Tools for dealing with SDSS-V plate files and plate runs.
 
 
-<a id="org642288a"></a>
+<a id="org3915932"></a>
 
 # Installation
 
 -   **Setup environment** (optional, but recommended)   
-    If fulfilling the [Requirements](#org637ccf5) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with
+    If fulfilling the [Requirements](#orga78c5fb) seems daunting and you run the conda package manager, you can set up a python environment that will happily install \`ppv\` with
     
         conda env create -f ppv_sdss_min.yml  # creates conda environment
         conda activate ppv  # activates conda environment
@@ -45,15 +45,15 @@ Tools for dealing with SDSS-V plate files and plate runs.
         cd ppv
         python setup.py install  # install ==ppv== package
 
--   **Requirements** <a id="org637ccf5"></a>
+-   **Requirements** <a id="orga78c5fb"></a>
     -   python (>3.5, 3.8 preferred) [if this frightens you, read on]
     -   astropy
     -   pexpect (this is a dependency of ipython)
-    -   [pydl](https://github.com/jcbird/ppv.git) (development version)
+    -   [pydl](https://github.com/weaverba137/pydl)  (development version)
         Package from Benjamin Weaver for dealing with yanny files.
 
 
-<a id="orgd33bf07"></a>
+<a id="org27e018a"></a>
 
 # Configuration and Data Files
 
@@ -108,7 +108,7 @@ Notes:
 -   `plate_dir` does not need to exist. `ppv` will automatically create this directory if needed.
 
 
-<a id="org83ae075"></a>
+<a id="org1860e88"></a>
 
 ## Copy `ppv_setup.ini` to ~/.config and edit
 
@@ -121,7 +121,7 @@ You MUST edit the `ppv_setup.ini` and copy it to the `.config` directory in your
 and edit accordingly.
 
 
-<a id="org0a66b5d"></a>
+<a id="orgf24d564"></a>
 
 ## `five_plates` functionality
 
@@ -131,21 +131,21 @@ and edit accordingly.
 -   See the [`five_plates` tutorial notebook](docs/PPV_fiveplates.ipynb)  in the `docs` directory for an example of this.
 
 
-<a id="org68bdc22"></a>
+<a id="org55f7a76"></a>
 
 ## Plate directory and PlugHoles files
 
 If you have an account at Utah and put the `ppv_setup.ini` file in your `$HOME/.config` directory, you are good to go! `ppv` will take of everything!
 
 
-<a id="orga112a91"></a>
+<a id="org58b7e97"></a>
 
 ### run `ppv.ppv.update_platefiles()` to ensure the latest versions of all plate files.
 
 See the [tutorial notebook](docs/PPV_tutorial.ipynb) in the `docs` directory for an example of this.
 
 
-<a id="orgb825fff"></a>
+<a id="orgf4e65a4"></a>
 
 # Breaking Changes (PLEASE READ)
 
@@ -186,69 +186,69 @@ In the interest of speed, `ppv` is following the, &ldquo;break early and often&r
 </table>
 
 
-<a id="org1a42d67"></a>
+<a id="org391dac5"></a>
 
 # Concepts
 
 There are four basic objects in the `ppv` package: `Plate`, `Field`, `Platerun`, and `Targets`. There is also a convenient plate summary table.
 
 
-<a id="org942c269"></a>
+<a id="orga635f42"></a>
 
 ## Plate Summary
 
 Table accessible via `ppv.ppv.allplate_summary`. Each row corresponds to a single plate and contains, amongst other columns, the plate id, position of the plate center, the program name driving plate design, the corresponding field (name), and the platerun.
 
 
-<a id="org608f842"></a>
+<a id="org70f3142"></a>
 
 ## Plate
 
 One to one correspondence with a plate. A `Plate` is identified by its unique plate id (an integer; e.g., 15004).
 
 
-<a id="orgd1bf58a"></a>
+<a id="orgcf323b6"></a>
 
 ## Field
 
 A field is defined by a field name (a string; e.g., `AQM_001.85+26.44`) and represents one field of view on the sky. All plates belong to one field. All fields contain one or more plates.
 
 
-<a id="org92d8d68"></a>
+<a id="org3ab2f1b"></a>
 
 ## Platerun
 
 A platerun is defined by its name (a string; e.g., 2020.08.c.bhm-mwm). A platerun is a collection of fields (and thus plates) to be a drilled for a given observing run.
 
 
-<a id="org8f715b1"></a>
+<a id="orgb6c82d9"></a>
 
 ## Targets
 
 The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
 
-<a id="org3da2f2e"></a>
+<a id="orgc269140"></a>
 
 # Basic Usage
 
 
-<a id="orga8a3cfc"></a>
+<a id="orgc7dd845"></a>
 
 ## See the [tutorial notebook](docs/PPV_tutorial.ipynb) in the `docs` directory.
 
 
-<a id="orgf1ad5ef"></a>
+<a id="org0a495ed"></a>
 
 ## Specific example [notebook with 2020.10.a.mwm-bhm plate run](docs/platerun_2020_10_a_mwm_bhm_example.ipynb)
 
 
-<a id="orgd8b4a92"></a>
+<a id="org5b045db"></a>
 
 # FAQs
 
 
-<a id="org6c80bcf"></a>
+<a id="org5708348"></a>
 
 ### I don&rsquo;t have an account at Utah and/or I can&rsquo;t get the plugHoles files.
 
@@ -258,21 +258,21 @@ PLEASE DO THIS!
 If there is a delay in getting an account for any reason, submit an issue with &ldquo;No Utah account&rdquo; as the title. I will send you a tarball with the correct files and directory structure.
 
 
-<a id="org0c6c07d"></a>
+<a id="orgc1920eb"></a>
 
 ### I don&rsquo;t know the catalogIDs of the targets I want to check.
 
 Look at the tutorial notebook (under Targets) to see if downloading one of the carton targetDB files is helpful. If not, create an issue and I will help asap!
 
 
-<a id="org0f0bc08"></a>
+<a id="org2d6f1e3"></a>
 
 ### Something doesn&rsquo;t work, I wish `ppv` did THIS, why does `ppv` do THIS, I want to do X with `ppv`, or I wish something in `ppv` had a different name.
 
 Awesome, let&rsquo;s make it work. Submit an issue!
 
 
-<a id="org7027b87"></a>
+<a id="org8431533"></a>
 
 # TODOs
 
@@ -282,7 +282,7 @@ Awesome, let&rsquo;s make it work. Submit an issue!
 4.  Better Targets constructor.
 
 
-<a id="org7f216b0"></a>
+<a id="org115c4df"></a>
 
 ## DONE
 
