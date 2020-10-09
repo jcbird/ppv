@@ -89,7 +89,8 @@ A platerun is defined by its name (a string; e.g., 2020.08.c.bhm-mwm). A plateru
 The Targets class is a container for your targets of interest and interfaces with the Plate, Field, and Platerun objects.
 
 * Basic Usage
-See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory.
+** See the [[file:docs/PPV_tutorial.ipynb][tutorial notebook]] in the =docs= directory.
+** Specific example [[file:docs/platerun_2020_10_a_mwm_bhm_example.ipynb][notebook with 2020.10.a.mwm-bhm plate run]] 
 
 * FAQs
 *** I don't have an account at Utah and/or I can't get the plugHoles files.
