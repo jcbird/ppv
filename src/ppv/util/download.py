@@ -33,10 +33,15 @@ def _ask_password():
 def _run_rsync(rsync_command_string, utah_passwd):
     ## shell_path = os.environ.get('SHELL')
     ## rsync_child = pexpect.spawn(shell_path, ['-c', rsync_command_string])
-    rsync_child = pexpect.spawn(rsync_command_string)
-    rsync_child.expect('[P/p]assword:')
-    rsync_child.sendline(utah_passwd)
-    rsync_child.wait()
+    rsync_child = pexpect.spawn(rsync_command_string, timeout=4800)
+    _prompt = rsync_child.expect(['[P/p]assword:', 'continue connecting (yes/no)?'], timeout=5)
+    if _prompt == 0 :
+        rsync_child.sendline(utah_passwd)
+    elif _prompt == 1:
+        rsync_child.sendline('yes')
+        rsync_child.expect('[P/p]assword: ')
+        rsync_child.sendline(utah_passwd)
+    rsync_child.read()
     rsync_child.close()
     del utah_passwd  # get rid of any reference to password
     if rsync_child.exitstatus == 0:
