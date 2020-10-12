@@ -41,6 +41,7 @@ def _run_rsync(rsync_command_string, utah_passwd):
         rsync_child.sendline('yes')
         rsync_child.expect('[P/p]assword: ')
         rsync_child.sendline(utah_passwd)
+    print('Starting rsync process....')
     rsync_child.read()
     rsync_child.close()
     del utah_passwd  # get rid of any reference to password
