@@ -21,14 +21,14 @@ def _rsync_task(rsync_command_string):
         print('ppv will assume all files are available.')
         print('Continue.')
         return None
-
-    # Continue on if not NONE
-    print('Running command....')
-    print(rsync_command_string)
-    utah_passwd = _ask_password()
-    rsync_pipe = _run_rsync(rsync_command_string, utah_passwd)
-    del utah_passwd  # better to do this, no reference
-    return rsync_pipe
+    else:
+        # Continue on if not NONE
+        print('Running command....')
+        print(rsync_command_string)
+        utah_passwd = _ask_password()
+        rsync_pipe = _run_rsync(rsync_command_string, utah_passwd)
+        del utah_passwd  # better to do this, no reference
+        return rsync_pipe
 
 
 def _ask_password():
