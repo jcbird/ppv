@@ -16,7 +16,14 @@ def _rsync_task(rsync_command_string):
     prints out rsync command, gets password, and executes.
     Usefuly for single rsync tasks.
     """
-    print('Running command:')
+    if config.utah_username == 'NONE':
+        print('Skipping rsync process because username is NONE')
+        print('ppv will assume all files are available.')
+        print('Continue.')
+        return None
+
+    # Continue on if not NONE
+    print('Running command....')
     print(rsync_command_string)
     utah_passwd = _ask_password()
     rsync_pipe = _run_rsync(rsync_command_string, utah_passwd)
@@ -31,8 +38,6 @@ def _ask_password():
 
 
 def _run_rsync(rsync_command_string, utah_passwd):
-    ## shell_path = os.environ.get('SHELL')
-    ## rsync_child = pexpect.spawn(shell_path, ['-c', rsync_command_string])
     rsync_child = pexpect.spawn(rsync_command_string, timeout=4800)
     _prompt = rsync_child.expect(['[P/p]assword:', 'continue connecting (yes/no)?'], timeout=5)
     if _prompt == 0 :
@@ -84,25 +89,9 @@ def plugHoles_batch(plate_batch, dry_run=False, execute=True, output=False):
     if execute is False:
         return rsync_cmd
 
-    print('Running command:')
-    print(rsync_cmd)
-    utah_passwd = _ask_password()
-    rsync_pipe = _run_rsync(rsync_cmd, utah_passwd)
-
-    # print('Running command:')
-    # print(rsync_cmd)
-    # print(f'\n\nEnter password for {config.utah_username}: ')
-    # utah_passwd = getpass.getpass()
-
-    # rsync_child = pexpect.spawn(rsync_cmd)
-    # rsync_child.expect('[P/p]assword:')
-    # rsync_child.sendline(utah_passwd)
-    # rsync_child.wait()
-    # rsync_child.close()
-    # if rsync_child.exitstatus == 0:
-    #     print('rsync command ran successfully.')
-    # # rsync_cmd = shlex.split(rsync_cmd)
-    # # subprocess.run(rsync_cmd, shell=True)
+    rsync_pipe = _rsync_task(rsync_cmd)
+    if output:
+        return rsync_pipe
     return None
 
 
