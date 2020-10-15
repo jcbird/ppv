@@ -61,20 +61,44 @@ def load_plansummary():
     return Table.read(os.fspath(paths.plate_plans()), format='fits')
 
 
-# TODO Make summary file loading more flexible. ARRRGHHH!
 def load_fiveplates_summary(platerun):
     """
-    This is hard-coded for 2020.08.x.mwm-bhm!!! Need to make the file format
-    machine-readable!
     """
     summary_file = paths.fiveplates_summary(platerun)
     if summary_file.exists():
         pass
     else:
         raise FileNotFoundError(os.fspath(summary_file))
-    return ascii.read(os.fspath(summary_file), header_start=1,
-                      format='commented_header')
+    return Table.read(os.fspath(summary_file), format='ascii')
 
+def load_fiveplates_cartons(platerun):
+    """
+    """
+    cartons_file = paths.fiveplates_cartons(platerun)
+    if cartons_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(cartons_file))
+    cartons_table = Table.read(os.fspath(cartons_file), format='ascii')
+    cartons_table.add_index('carton')
+    return cartons_table
+
+def load_fiveplates_priority(platerun, filling_scheme):
+    """
+    """
+    priority_file = paths.fiveplates_priority(platerun, filling_scheme)
+    if priority_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(priority_file))
+    priority_table = Table.read(os.fspath(priority_file),
+                                format='ascii.no_header')
+    old_colname = priority_table.colnames[0]
+    priority_indx = list(range(len(priority_table)))
+    priority_table['order'] = priority_indx
+    priority_table.rename_column(old_colname, 'program')
+    priority_table.add_index('program')
+    return priority_table
 
 def load_fiveplates_field(platerun, field_file_string):
     """

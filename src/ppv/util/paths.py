@@ -125,8 +125,38 @@ def fiveplates_summary(platerun):
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
     """
-    summary_file = f'{platerun}.summary'
+    summary_file = f'plate_data_{platerun}.txt'
     return fiveplates_platerun(platerun) / summary_file
+    
+def fiveplates_cartons(platerun):
+    """
+    path to cartons file in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+    # Flexible path finding due to e.g., 'cartons_list.v5.txt'
+    files = os.listdir(fiveplates_platerun(platerun))
+    cartons_file = list(filter(lambda X: 'cartons_list' in X, files))[0]
+    return fiveplates_platerun(platerun) / cartons_file
+
+def fiveplates_priority(platerun, filling_scheme):
+    """
+    path to cartons file in five_plates repo.
+
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    filling_scheme : str
+        FiberFilling column in fiveplates_cartons file, e.g., 'MWM_30min'
+    """
+    priority_file = f'{filling_scheme}_order.txt'
+    return fiveplates_platerun(platerun) / priority_file
+    
 
 def fiveplates_fieldfiles(platerun):
     """

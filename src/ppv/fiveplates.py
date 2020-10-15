@@ -31,6 +31,17 @@ def available_plateruns():
 # TODO could abstract this by getting names of columns for each class
 # e.g., RAcol = 'RA(deg)', etc.
 
+def carton_to_program(field, carton):
+    return field._cartons_table.loc[carton]['program']
+
+
+def carton_to_priority(field, carton, instrument):
+    program = carton_to_program(field, carton)
+    # instrument is 'boss' or 'apogee'
+    program_str = f'{instrument}_SCI_{program}'
+    return field._priority_order.loc[program_str]['order']
+
+
 class Field:
     """
     Class to act as interface to fields in the five_plates repository.
@@ -70,10 +81,14 @@ class Field:
                                obstime=Time(self.epoch, format='decimalyear'))
         # TODO check epoch of field designation
         # self.platerun, self.programname = self.meta()
-        self._radius = 1.49 * u.degree
+        self._radius = self._get_radius() * u.degree
+        self._fiber_filling = self._get_filling_scheme()
         # Only ONE targets file per field as of now
         # can load when needed for now
         self._colnames = {'catalogid': 'Catalog_id'}
+        self._cartons_table = io.load_fiveplates_cartons(platerun_name)
+        self._priority_order = io.load_fiveplates_priority(platerun_name,
+                                                           self._fiber_filling)
 
     def __repr__(self):
         return f'five_plates Field({self.name!r})'
@@ -87,12 +102,21 @@ class Field:
         return np.where(self.platerun_summary['FieldName'] == self.name)[0]
 
     def _get_epoch(self):
-        return self.platerun_summary['Epoch(yr)'][self._summary_indx]
+        return self.platerun_summary['Epoch(yr)'][self._summary_indx][0]
+
+    def _get_radius(self):
+        return self.platerun_summary['Radius(deg)'][self._summary_indx][0]
+
+    def _get_filling_scheme(self):
+        return self.platerun_summary['FiberFilling'][self._summary_indx][0]
 
     def _center(self):
         ra = self.platerun_summary['RA(deg)'][self._summary_indx][0]
         dec = self.platerun_summary['Dec(deg)'][self._summary_indx][0]
         return ra, dec
+
+    def firstcarton_program_name(self, carton):
+        return carton_to_program(self, carton)
 
 
     @property

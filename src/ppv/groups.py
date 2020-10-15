@@ -97,6 +97,15 @@ class Field:
             self._targets = self._load_table()
             return self._targets
 
+    @property
+    def science_targets(self):
+        try:
+            return self._science_targets
+        except AttributeError:
+            _tmp = self._load_table()
+            self._science_targets = _tmp[_tmp['tarettype'] == 'science']
+            return self._science_targets
+
     def _load_table(self):
         """
         Takes all converts plates in field and combines target tables.
