@@ -20,6 +20,7 @@ from astropy.time import Time
 from astropy.table import vstack, Column
 from astropy.io import ascii
 import os
+import re
 
 
 
@@ -31,8 +32,9 @@ def available_plateruns():
 # TODO could abstract this by getting names of columns for each class
 # e.g., RAcol = 'RA(deg)', etc.
 
+
 def carton_to_program(field, carton):
-    return field._cartons_table.loc[carton]['program']
+    return field._program_name_fix[field._cartons_table.loc[carton]['program']]
 
 
 def carton_to_priority(field, carton, instrument):
@@ -87,6 +89,10 @@ class Field:
         # can load when needed for now
         self._colnames = {'catalogid': 'Catalog_id'}
         self._cartons_table = io.load_fiveplates_cartons(platerun_name)
+        self._program_names = self._get_program_names()
+        self._program_name_fix = {old: new for old, new in
+                                  zip(self._cartons_table['program'],
+                                      self._program_names)}
         self._priority_order = io.load_fiveplates_priority(platerun_name,
                                                            self._fiber_filling)
 
@@ -114,6 +120,12 @@ class Field:
         ra = self.platerun_summary['RA(deg)'][self._summary_indx][0]
         dec = self.platerun_summary['Dec(deg)'][self._summary_indx][0]
         return ra, dec
+
+    def _get_program_names(self):
+        programs = [re.findall('\(([^)]+)', prog)[0]
+                    if ('(' in prog) else prog  for
+                    prog in self._cartons_table['program']]
+        return programs
 
     def firstcarton_program_name(self, carton):
         return carton_to_program(self, carton)
