@@ -82,6 +82,13 @@ def plateholes(platenum):
 #  five_plates
 ##############
 
+def fiveplates_description():
+    """
+    path to description file in five_plates repo.
+    """
+    description_file = 'plateruns_description.txt'
+    return config.fiveplates_dir / description_file
+
 def _five_plates_relpaths():
     tree_ =  os.walk(config.fiveplates_dir)
     dirs_ = [Path(root_dir) for (root_dir, _, _) in tree_]
@@ -114,7 +121,7 @@ def fiveplates_platerun(platerun):
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
     """
-    return config.fiveplates_dir / _fp_name_to_dir[platerun]
+    return config.fiveplates_dir / platerun
 
 def fiveplates_summary(platerun):
     """

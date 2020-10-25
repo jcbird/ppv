@@ -27,11 +27,11 @@ import re
 # get possible plateruns
 
 def available_plateruns():
-    return paths._five_plates_available_plateruns()
+    fp_info = io.load_fiveplates_description()
+    return list(fp_info['OldName'])
 
 # TODO could abstract this by getting names of columns for each class
 # e.g., RAcol = 'RA(deg)', etc.
-
 
 def carton_to_program(field, carton):
     return field._program_name_fix[field._cartons_table.loc[carton]['program']]
