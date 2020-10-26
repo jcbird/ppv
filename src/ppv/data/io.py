@@ -69,6 +69,14 @@ def load_fiveplates_description():
         raise FileNotFoundError(os.fspath(description_file))
     return  Table.read(os.fspath(description_file), format='ascii.commented_header')
 
+def load_fp_platedata():
+    platedata_file = paths.fp_platedata()
+    if platedata_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(platedata_file))
+    return  Table.read(os.fspath(platedata_file), format='ascii.commented_header')
+
 
 def load_fiveplates_summary(platerun):
     """

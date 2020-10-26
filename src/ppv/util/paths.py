@@ -123,6 +123,31 @@ def fiveplates_platerun(platerun):
     """
     return config.fiveplates_dir / platerun
 
+def fp_platedata(platerun):
+    """
+    path to summary file in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+    summary_file = f'plate_data_{platerun}.txt'
+    return fiveplates_platerun(platerun) / summary_file
+
+def fp_defaultparams(platerun):
+    """
+    path to default parameter file in five_plates repo.
+    One for each platerun
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+    param_file = f'{platerun}_default_parameters.txt'
+    return fiveplates_platerun(platerun) / param_file
+
 def fiveplates_summary(platerun):
     """
     path to summary file in five_plates repo.
@@ -134,7 +159,7 @@ def fiveplates_summary(platerun):
     """
     summary_file = f'plate_data_{platerun}.txt'
     return fiveplates_platerun(platerun) / summary_file
-    
+
 def fiveplates_cartons(platerun):
     """
     path to cartons file in five_plates repo.
