@@ -23,19 +23,50 @@ import os
 import re
 
 
+# HARD CODING FOR NOW
+# TODO update when consensus reached with Felipe and Kevin
+
+_available = ['2020.08.a.bhm-mwm',
+              '2020.10.x.mwm-bhm',
+              '2020.10.y.mwm-bhm',
+              '2020.09.y.bhm-mwm']
+
+#  Needs to be in same order as _available
+_prefect_name = ['N/A',
+                 '2020.10.a.mwm-bhm',
+                 '2020.10.c.mwm-bhm',
+                 'N/A']
+
+
+_prefect_to_fp_name = {prefect_name : fp_name for
+                       prefect_name, fp_name in
+                       zip(_available, _prefect_name)}
+
 
 # get possible plateruns
 
 def available_plateruns():
-    fp_info = io.load_fiveplates_description()
-    return list(fp_info['OldName'])
+    return _available
 
-# TODO could abstract this by getting names of columns for each class
-# e.g., RAcol = 'RA(deg)', etc.
+
+def get_program_names(cartons_table):
+    """
+    Returns program names with only string in parenthesis 
+    """
+    programs = [re.findall('\(([^)]+)', prog)[0]
+                if ('(' in prog) else prog  for
+                prog in cartons_table['program']]
+    return programs
+
+        self._program_names = self._get_program_names()
+        self._program_name_fix = {old: new for old, new in
+                                  zip(self._cartons_table['program'],
+                                      self._program_names)}
+        self._priority_order = io.load_fiveplates_priority(platerun_name,
+
 
 def carton_to_program(field, carton):
     return field._program_name_fix[field._cartons_table.loc[carton]['program']]
-
 
 def carton_to_priority(field, carton, instrument):
     program = carton_to_program(field, carton)
@@ -209,6 +240,8 @@ class Field:
             return np.in1d(np.array([catIDs]), self.targets['catalogid'])
 
 
+
+
 class Platerun:
     """
     Class to act as interface to platerun in five_plates repository.
@@ -218,15 +251,31 @@ class Platerun:
         if _check_platerun(run_name):
             pass  # all is well, platerun available
         self.name = run_name
-        self.platesummary = io.load_fiveplates_summary(run_name)
+        self.platedata = io.load_fp_platedata(run_name)
         self.fieldnames = self._get_fields()
+        self._filling_modes = self._get_filling_modes()
+        self._defaultparams = io.load_fp_defaultparams(run_name)
+        self.fill_priorities = self._parse_fill_priorities()
+        self._carton_list_version = self._defaultparams.loc['carton_list_version']['Value']
+        self._cartons_table = io.load_fiveplates_cartons(self.name,
+                                                         self._carton_list_version)
 
     def _get_fields(self):
-        return list(self.platesummary['FieldName'])
+        return list(self.platedata['FIELD'])
 
     def load_fields(self):
         return [Field(fname, self.name) for fname in
                 self.fieldnames]
+
+    def _get_filling_modes(self):
+        return list(set(self.platedata['FIBERFILLING']))
+
+    def _parse_fill_priorities(self):
+        """
+        Construct dictionary of filling_modes to list of par
+        """
+        return {fill_mode: io.load_fiveplates_priority(self.name, fill_mode) for
+                fill_mode in self._filling_modes}
 
     @property
     def fields(self):

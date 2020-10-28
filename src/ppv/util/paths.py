@@ -160,7 +160,7 @@ def fiveplates_summary(platerun):
     summary_file = f'plate_data_{platerun}.txt'
     return fiveplates_platerun(platerun) / summary_file
 
-def fiveplates_cartons(platerun):
+def fiveplates_cartons(platerun, version='v6'):
     """
     path to cartons file in five_plates repo.
 
@@ -169,9 +169,7 @@ def fiveplates_cartons(platerun):
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
     """
-    # Flexible path finding due to e.g., 'cartons_list.v5.txt'
-    files = os.listdir(fiveplates_platerun(platerun))
-    cartons_file = list(filter(lambda X: 'cartons_list' in X, files))[0]
+    cartons_file = f'cartons_list.{version}.txt'
     return fiveplates_platerun(platerun) / cartons_file
 
 def fiveplates_priority(platerun, filling_scheme):

@@ -69,14 +69,23 @@ def load_fiveplates_description():
         raise FileNotFoundError(os.fspath(description_file))
     return  Table.read(os.fspath(description_file), format='ascii.commented_header')
 
-def load_fp_platedata():
-    platedata_file = paths.fp_platedata()
+def load_fp_platedata(platerun):
+    platedata_file = paths.fp_platedata(platerun)
     if platedata_file.exists():
         pass
     else:
         raise FileNotFoundError(os.fspath(platedata_file))
     return  Table.read(os.fspath(platedata_file), format='ascii.commented_header')
 
+def load_fp_defaultparams(platerun):
+    params_file = paths.fp_defaultparams(platerun)
+    if params_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(params_file))
+    dp_table =  Table.read(os.fspath(params_file), format='ascii.commented_header')
+    dp_table.add_index('Parameter')
+    return dp_table
 
 def load_fiveplates_summary(platerun):
     """
@@ -88,10 +97,10 @@ def load_fiveplates_summary(platerun):
         raise FileNotFoundError(os.fspath(summary_file))
     return Table.read(os.fspath(summary_file), format='ascii')
 
-def load_fiveplates_cartons(platerun):
+def load_fiveplates_cartons(platerun, version):
     """
     """
-    cartons_file = paths.fiveplates_cartons(platerun)
+    cartons_file = paths.fiveplates_cartons(platerun, version=version)
     if cartons_file.exists():
         pass
     else:
