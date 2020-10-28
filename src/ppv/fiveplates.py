@@ -13,6 +13,7 @@ from . import ppv
 from .data import io
 from .util import paths
 from . import config
+from .parse_platedata import main_platedata
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
@@ -44,22 +45,13 @@ _prefect_to_fp_name = {prefect_name : fp_name for
 
 
 
-# Constuct master plate_data file
+# Get main plate-data, this is akin to platePlan.par
 
-platedata_tables = [io.load_fp_platedata(prun) for prun
-        in _available[::-1]]
-
-a =io.load_fp_platedata(_available[-1])
-b =io.load_fp_platedata(_available[-2])
-c =io.load_fp_platedata(_available[-3])
-
-io.load_fp_platedata(_available[-1])
+_platedata_full = main_platedata
 
 
 def replace_space(val):
     return val.replace(' ', '_')
-
-
 
 # get possible plateruns
 
@@ -75,12 +67,6 @@ def get_program_names(cartons_table):
                 if ('(' in prog) else prog  for
                 prog in cartons_table['program']]
     return programs
-
-        self._program_names = self._get_program_names()
-        self._program_name_fix = {old: new for old, new in
-                                  zip(self._cartons_table['program'],
-                                      self._program_names)}
-        self._priority_order = io.load_fiveplates_priority(platerun_name,
 
 
 def carton_to_program(field, carton):
