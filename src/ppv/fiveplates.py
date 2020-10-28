@@ -43,6 +43,24 @@ _prefect_to_fp_name = {prefect_name : fp_name for
                        zip(_available, _prefect_name)}
 
 
+
+# Constuct master plate_data file
+
+platedata_tables = [io.load_fp_platedata(prun) for prun
+        in _available[::-1]]
+
+a =io.load_fp_platedata(_available[-1])
+b =io.load_fp_platedata(_available[-2])
+c =io.load_fp_platedata(_available[-3])
+
+io.load_fp_platedata(_available[-1])
+
+
+def replace_space(val):
+    return val.replace(' ', '_')
+
+
+
 # get possible plateruns
 
 def available_plateruns():

@@ -69,13 +69,14 @@ def load_fiveplates_description():
         raise FileNotFoundError(os.fspath(description_file))
     return  Table.read(os.fspath(description_file), format='ascii.commented_header')
 
-def load_fp_platedata(platerun):
+def load_fp_platedata(platerun, **table_kwds):
     platedata_file = paths.fp_platedata(platerun)
     if platedata_file.exists():
         pass
     else:
         raise FileNotFoundError(os.fspath(platedata_file))
-    return  Table.read(os.fspath(platedata_file), format='ascii.commented_header')
+    return  Table.read(os.fspath(platedata_file), format='ascii.commented_header',
+                       **table_kwds)
 
 def load_fp_defaultparams(platerun):
     params_file = paths.fp_defaultparams(platerun)
