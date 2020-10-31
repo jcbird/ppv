@@ -188,6 +188,34 @@ def fiveplates_priority(platerun, filling_scheme):
     return fiveplates_platerun(platerun) / priority_file
     
 
+def fiveplates_targetlists(platerun):
+    """
+    path to zip file containing targetlists in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+
+    target_files = f'{platerun}_targetlists.zip'
+    return fiveplates_platerun(platerun) / target_files
+
+
+def fp_field_designID(field, designID):
+    return f'{field}_des{designID}'
+
+
+def fiveplates_platedef(field, designID):
+    """
+    path to plate definition file WITHIN targetlists zip file.
+    """
+    pre_ = 'targetlists'
+    # platenum_as_str also works for designIDs, just zero-padding to 6 digits
+    pldef_file = f'plateDefinition-{platenum_as_str(designID)}.txt'
+    return f'{pre_}/{fp_field_designID(field, designID)}/{pldef_file}'
+
+
 def fiveplates_fieldfiles(platerun):
     """
     path to zip file containing fields_files in five_plates repo.

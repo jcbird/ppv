@@ -83,53 +83,58 @@ class Field:
     """
     Class to act as interface to fields in the five_plates repository.
 
-    By default, Field will load the corresponding '_targets_clean.txt' files.
-    Examination of '_targets.txt' file is forthcoming.
+    The Field object will inspect the corresponding plateDefinition file
+    in 'targetlists.zip'. 
+    It will then find the list of input files, parse them, and create
+    a table of targets with a new column for priority.
+    The priority column reflects the ordered priority of programs
+    coming from the fiberfilling modes (*order.txt files).
 
     To make the five_plates.Field as consistent as possible with
     groups.Field, the code treats the '_targets' and '_targets_clean'
     files as if they were plates.
     This should be completely transparent to the user.
 
-    Platerun needs to be established first for five_plates because
-    there is no overall summary file such as PlatePlans.par
+    If a field has only ONE design, you need only specify the Field name.
+    For fields with multiple designs (usually BHM), the design_id keyword
+    must be specified.
     """
 
-    def __init__(self, fieldname, platerun_name):
+    def __init__(self, fieldname, design_id=None):
         """
 
         Parameters
         ----------
         fieldname : str
             field name. These can be found in the Platerun summary files
-        platerun_name : str
-            string identifier of platerun where the field is found; e.g. '2020.08.x.bhm-mwm'.
+        designID : int
         """
         self.name = fieldname
-        self.platerun_name = platerun_name
-        # Need to load platerun summary 
-        self.platerun_summary = io.load_fiveplates_summary(platerun_name)
-        self._summary_indx = self._indx_in_platerun()
+        self.designID = design_id
+        self._pd_indx = self._indx_in_platedata()
+        self._pdata = main_platedata[self._pd_indx] # row for field
+        # Get designID if not specified, IF specified, just recopy
+        self.designID = self._fetch_designID()
         self.epoch = self._get_epoch()
-        # self._platenums = plates_of_field(self.name)
-        # self._summary_indx = indx_in_plateruns(self.name)
+        self._radius = self._get_radius() * u.degree
         self.ra, self.dec = self._center()
         self.center = SkyCoord(self.ra * u.deg, self.dec * u.deg,
                                obstime=Time(self.epoch, format='decimalyear'))
-        # TODO check epoch of field designation
-        # self.platerun, self.programname = self.meta()
-        self._radius = self._get_radius() * u.degree
-        self._fiber_filling = self._get_filling_scheme()
-        # Only ONE targets file per field as of now
-        # can load when needed for now
-        self._colnames = {'catalogid': 'Catalog_id'}
-        self._cartons_table = io.load_fiveplates_cartons(platerun_name)
-        self._program_names = self._get_program_names()
-        self._program_name_fix = {old: new for old, new in
-                                  zip(self._cartons_table['program'],
-                                      self._program_names)}
-        self._priority_order = io.load_fiveplates_priority(platerun_name,
-                                                           self._fiber_filling)
+        self.platerun = self._get_platerun()
+
+
+        # # self.platerun, self.programname = self.meta()
+        # self._fiber_filling = self._get_filling_scheme()
+        # # Only ONE targets file per field as of now
+        # # can load when needed for now
+        # self._colnames = {'catalogid': 'Catalog_id'}
+        # self._cartons_table = io.load_fiveplates_cartons(platerun_name)
+        # self._program_names = self._get_program_names()
+        # self._program_name_fix = {old: new for old, new in
+        #                           zip(self._cartons_table['program'],
+        #                               self._program_names)}
+        # self._priority_order = io.load_fiveplates_priority(platerun_name,
+        #                                                    self._fiber_filling)
 
     def __repr__(self):
         return f'five_plates Field({self.name!r})'
@@ -139,21 +144,38 @@ class Field:
         second = f'platerun ID: {self.platerun_name!r}'
         return first + second
 
-    def _indx_in_platerun(self):
-        return np.where(self.platerun_summary['FieldName'] == self.name)[0]
+    def _indx_in_platedata(self):
+        # initial index
+        indx = main_platedata.loc_indices[self.name]
+        if isinstance(indx, list):  # multiple indices
+            # better have DesignID then
+            try:
+                return main_platedata.loc_indices['DesignID', self.designID]
+            except TypeError:
+                print('Field: {self.name!r} has multiple designs.')
+                print('Design: {self.designID!r} not found.')
+                print('Please construct Field object with correct designID.')
+        else:  # only one row, yay
+            return indx
+
+    def _fetch_designID(self):
+        return self._pdata['DesignID']
 
     def _get_epoch(self):
-        return self.platerun_summary['Epoch(yr)'][self._summary_indx][0]
+        return self._pdata['Epoch']
 
     def _get_radius(self):
-        return self.platerun_summary['Radius(deg)'][self._summary_indx][0]
+        return self._pdata['Radius']
 
     def _get_filling_scheme(self):
-        return self.platerun_summary['FiberFilling'][self._summary_indx][0]
+        return self._pdata['FiberFilling']
+
+    def _get_platerun(self):
+        return self._pdata['FiberFilling']
 
     def _center(self):
-        ra = self.platerun_summary['RA(deg)'][self._summary_indx][0]
-        dec = self.platerun_summary['Dec(deg)'][self._summary_indx][0]
+        ra = self._pdata['RA']
+        dec = self._pdata['Dec']
         return ra, dec
 
     def _get_program_names(self):

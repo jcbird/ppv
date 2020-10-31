@@ -53,6 +53,9 @@ for pd_table in platedata_tables:
     pd_table.rename_columns(pd_table.colnames, standard_names)
 
 main_platedata = vstack(platedata_tables)
+main_platedata.add_index('FieldName')
+main_platedata.add_index('DesignID')
+
 
 
 
