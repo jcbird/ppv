@@ -146,4 +146,31 @@ def load_fiveplates_field(platerun, field_file_string):
             data = Table.read(field, format='ascii.commented_header')
     return data
 
+def is_comment(s):
+    return s.startswith('#')
 
+def str_to_number_if_number(s):
+    try:
+        return int(s) if float(s) == int(float(s)) else float(s)
+    except ValueError:  #  it's a string
+        return s
+
+def fp_platedef_params(platerun, field, designID):
+    targetlists_zip = paths.fiveplates_targetlists(platerun)
+    params = {}
+    with ZipFile(os.fspath(targetlists_zip)) as tl_zip:
+        with tl_zip.open(paths.fiveplates_platedef(field, designID), 'r') as pldef:
+            rows = pldef.readlines()
+            for row in rows:
+                row = row.decode() # ZipFile must put this in bytes
+                items_ = row.strip().split() # split on whitespace
+                if row.startswith('#') or len(items_) < 2:
+                    continue
+                key = items_[0]
+                if len(items_) == 2:   # simple key:value pair
+                    value = str_to_number_if_number(items_[1])
+                else: # it's a list
+                    value = items_[1:]
+                    value = [str_to_number_if_number(val) for val in value]
+                params[key] = value
+    return params

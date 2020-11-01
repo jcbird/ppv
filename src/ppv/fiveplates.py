@@ -171,7 +171,7 @@ class Field:
         return self._pdata['FiberFilling']
 
     def _get_platerun(self):
-        return self._pdata['FiberFilling']
+        return self._pdata['Platerun']
 
     def _center(self):
         ra = self._pdata['RA']
