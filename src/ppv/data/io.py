@@ -174,3 +174,11 @@ def fp_platedef_params(platerun, field, designID):
                     value = [str_to_number_if_number(val) for val in value]
                 params[key] = value
     return params
+
+def fp_plateinput(platerun, field, designID, inputfile):
+    targetlists_zip = paths.fiveplates_targetlists(platerun)
+    with ZipFile(os.fspath(targetlists_zip)) as tl_zip:
+        pl_input_path_str = f'{paths.fp_field_designID_dir(field, designID)}/{inputfile}'
+        with tl_zip.open(pl_input_path_str, 'r') as pl_input:
+            data = Table.read(pl_input, format='ascii.commented_header')
+    return data

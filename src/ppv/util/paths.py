@@ -202,8 +202,12 @@ def fiveplates_targetlists(platerun):
     return fiveplates_platerun(platerun) / target_files
 
 
-def fp_field_designID(field, designID):
+def fp_field_designID_str(field, designID):
     return f'{field}_des{designID}'
+
+
+def fp_field_designID_dir(field, designID):
+    return f'targetlists/{fp_field_designID_str(field, designID)}'
 
 
 def fiveplates_platedef(field, designID):
@@ -213,8 +217,7 @@ def fiveplates_platedef(field, designID):
     pre_ = 'targetlists'
     # platenum_as_str also works for designIDs, just zero-padding to 6 digits
     pldef_file = f'plateDefinition-{platenum_as_str(designID)}.txt'
-    return f'{pre_}/{fp_field_designID(field, designID)}/{pldef_file}'
-
+    return f'{pre_}/{fp_field_designID_str(field, designID)}/{pldef_file}'
 
 def fiveplates_fieldfiles(platerun):
     """

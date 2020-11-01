@@ -79,6 +79,21 @@ def carton_to_priority(field, carton, instrument):
     return field._priority_order.loc[program_str]['order']
 
 
+###  platedef parsing functions  ###
+
+def plateInput_files(pldef_params):
+    """
+    Get ordered list of plateInput files given plate_definitio pararmeters.
+
+
+    Parameters
+    ----------
+    pldef_params : dictionary
+        Should likely be the output of io.fp_platedef_params()
+    """
+    return [f'plateInput{N+1}' for N in range(pldef_params['nInput'])]
+
+
 class Field:
     """
     Class to act as interface to fields in the five_plates repository.
@@ -121,8 +136,11 @@ class Field:
         self.center = SkyCoord(self.ra * u.deg, self.dec * u.deg,
                                obstime=Time(self.epoch, format='decimalyear'))
         self.platerun = self._get_platerun()
-
-
+        self._platedef_params = io.fp_platedef_params(self.platerun,
+                                                      self.name,
+                                                      self.designID)
+        self._program_priorities = io.load_fiveplates_priority(self.platerun,
+                                                               self._fiber_filling)
         # # self.platerun, self.programname = self.meta()
         # self._fiber_filling = self._get_filling_scheme()
         # # Only ONE targets file per field as of now
@@ -133,15 +151,13 @@ class Field:
         # self._program_name_fix = {old: new for old, new in
         #                           zip(self._cartons_table['program'],
         #                               self._program_names)}
-        # self._priority_order = io.load_fiveplates_priority(platerun_name,
-        #                                                    self._fiber_filling)
 
     def __repr__(self):
         return f'five_plates Field({self.name!r})'
 
     def __str__(self):
         first = f'five_plates Field: {self.name!r}, RA: {self.ra!r}, Dec: {self.dec!r}\n'
-        second = f'platerun ID: {self.platerun_name!r}'
+        second = f'platerun ID: {self.platerun!r}'
         return first + second
 
     def _indx_in_platedata(self):
@@ -218,7 +234,7 @@ class Field:
         else:
             field_file = paths.fiveplates_field_file(self.name)
 
-        data = io.load_fiveplates_field(self.platerun_name, field_file)
+        data = io.load_fiveplates_field(self.platerun, field_file)
         data.rename_column('Catalog_id', 'catalogid')  # keep consistent with plates
         N_targets = len(data)
         field_column = Column(data=[self.name] * N_targets,
