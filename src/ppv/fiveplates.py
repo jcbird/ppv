@@ -93,6 +93,15 @@ def plateInput_files(pldef_params):
     """
     return [f'plateInput{N+1}' for N in range(pldef_params['nInput'])]
 
+def parse_program_name_from_file(field, designID, plate_input_filename):
+    """
+    Given plateInput filename, get the full program name in the order file.
+    """
+    pre_ = f'targetlist_{field}_'
+    suf_ = f'_{designID}.txt'
+    return plate_input_filename.replace(pre_, '').replace(suf_, '')
+
+
 
 class Field:
     """
@@ -139,10 +148,10 @@ class Field:
         self._platedef_params = io.fp_platedef_params(self.platerun,
                                                       self.name,
                                                       self.designID)
+        self._fiber_filling = self._get_filling_scheme()
         self._program_priorities = io.load_fiveplates_priority(self.platerun,
                                                                self._fiber_filling)
         # # self.platerun, self.programname = self.meta()
-        # self._fiber_filling = self._get_filling_scheme()
         # # Only ONE targets file per field as of now
         # # can load when needed for now
         # self._colnames = {'catalogid': 'Catalog_id'}
