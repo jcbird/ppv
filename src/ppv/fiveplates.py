@@ -11,7 +11,7 @@ Platerun:
 """
 from . import ppv
 from .data import io
-from .util import paths
+from .util import scalar_column, paths
 from . import config
 from .parse_platedata import main_platedata
 import numpy as np
@@ -255,11 +255,13 @@ class Field:
         instrument = parse_instrument_name_from_file(self.name, self.designID,
                                                      targetlist_filename)
         platerun_priority_N = self._program_priorities.loc[priority_program_name]['order']
-        # add values to table
+        # add ID values to table
         Nrows = len(targetlist_table)
-        targetlist_table['instrument'] = Nrows * [instrument]
-        targetlist_table['program_priority'] = np.array(Nrows * [platerun_priority_N])
-        targetlist_table['order_name'] = Nrows * [priority_program_name]
+        targetlist_table.add_column(scalar_column(instrument, Nrows, 'instrument'))
+        targetlist_table.add_column(scalar_column(platerun_priority_N,
+                                                  Nrows, 'order_priority'))
+        targetlist_table.add_column(scalar_column(priority_program_name, Nrows,
+                                                  'order_name'))
         return targetlist_table
 
     def _full_plateinput_table(self):
@@ -269,7 +271,12 @@ class Field:
                           targetlist_file in _plateinput_filenames if
                           'apogee_STA' not in targetlist_file]
         full_table = vstack(plinput_tables)
-        full_table.sort('Catalog_id')
+        full_table.rename_column('Catalog_id', 'catalogid')
+        full_table.sort('catalogid')
+        full_table.add_column(scalar_column(self.name, len(full_table),
+                                            'field'))
+        full_table.add_column(scalar_column(self.designID, len(full_table),
+                                            'designID'))
         return full_table
 
     @property
@@ -317,6 +324,7 @@ class Field:
                               name='field',
                               dtype='S200')
         data.add_column(field_column)
+        data.sort('catalogid')
         return data
 
     def _contains(self, catIDs):
