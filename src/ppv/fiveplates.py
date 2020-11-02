@@ -102,6 +102,34 @@ def parse_program_name_from_file(field, designID, plate_input_filename):
     return plate_input_filename.replace(pre_, '').replace(suf_, '')
 
 
+# CartonLists and defaultparameters files are per Platerun
+# Let's cache this so they are only read one time
+
+default_params = {}
+cartons = {}
+
+
+def get_defaultparams(platerun):
+    try:
+        return default_params[platerun]
+    except KeyError:
+        print('Hey')
+        dparams = io.load_fp_defaultparams(platerun)
+        default_params[platerun] = dparams
+        return dparams
+
+
+def get_cartons_table(platerun):
+    dparams = get_defaultparams(platerun)
+    list_version = dparams.loc['carton_list_version']['Value']
+    try:
+        return cartons[platerun]
+    except KeyError:
+        print('Hello')
+        carton_table = io.load_fiveplates_cartons(platerun, list_version)
+        cartons[platerun] = carton_table
+        return carton_table
+
 
 class Field:
     """
