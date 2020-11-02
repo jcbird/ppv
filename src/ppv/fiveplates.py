@@ -91,7 +91,8 @@ def plateInput_files(pldef_params):
     pldef_params : dictionary
         Should likely be the output of io.fp_platedef_params()
     """
-    return [f'plateInput{N+1}' for N in range(pldef_params['nInput'])]
+    return [pldef_params[f'plateInput{N+1}'] for
+            N in range(pldef_params['nInput'])]
 
 def parse_program_name_from_file(field, designID, plate_input_filename):
     """
@@ -101,6 +102,12 @@ def parse_program_name_from_file(field, designID, plate_input_filename):
     suf_ = f'_{designID}.txt'
     return plate_input_filename.replace(pre_, '').replace(suf_, '')
 
+def parse_instrument_name_from_file(field, designID, plate_input_filename):
+    """
+    Given plateInput filename, get the full program name in the order file.
+    """
+    pre_ = f'targetlist_{field}_'
+    return plate_input_filename.replace(pre_, '').split('_')[0]
 
 # CartonLists and defaultparameters files are per Platerun
 # Let's cache this so they are only read one time
@@ -113,7 +120,6 @@ def get_defaultparams(platerun):
     try:
         return default_params[platerun]
     except KeyError:
-        print('Hey')
         dparams = io.load_fp_defaultparams(platerun)
         default_params[platerun] = dparams
         return dparams
@@ -125,10 +131,11 @@ def get_cartons_table(platerun):
     try:
         return cartons[platerun]
     except KeyError:
-        print('Hello')
         carton_table = io.load_fiveplates_cartons(platerun, list_version)
+        carton_table['fp_program'] = get_program_names(carton_table)
         cartons[platerun] = carton_table
         return carton_table
+
 
 
 class Field:
@@ -240,6 +247,38 @@ class Field:
     def firstcarton_program_name(self, carton):
         return carton_to_program(self, carton)
 
+    def _process_plateinput(self, targetlist_filename):
+        targetlist_table = io.fp_plateinput(self.platerun, self.name,
+                                            self.designID, targetlist_filename)
+        priority_program_name = parse_program_name_from_file(self.name, self.designID,
+                                                             targetlist_filename)
+        instrument = parse_instrument_name_from_file(self.name, self.designID,
+                                                     targetlist_filename)
+        platerun_priority_N = self._program_priorities.loc[priority_program_name]['order']
+        # add values to table
+        Nrows = len(targetlist_table)
+        targetlist_table['instrument'] = Nrows * [instrument]
+        targetlist_table['program_priority'] = np.array(Nrows * [platerun_priority_N])
+        targetlist_table['order_name'] = Nrows * [priority_program_name]
+        return targetlist_table
+
+    def _full_plateinput_table(self):
+        _plateinput_filenames = plateInput_files(self._platedef_params)
+        # APOGEE standards made separately! ARRGGGHHH
+        plinput_tables = [self._process_plateinput(targetlist_file) for
+                          targetlist_file in _plateinput_filenames if
+                          'apogee_STA' not in targetlist_file]
+        full_table = vstack(plinput_tables)
+        full_table.sort('Catalog_id')
+        return full_table
+
+    @property
+    def plateinput(self):
+        try:
+            return self._plateinput
+        except AttributeError:
+            self._plateinput = self._full_plateinput_table()
+            return self._plateinput
 
     @property
     def targets(self):  # Loads targets_clean file
