@@ -124,7 +124,6 @@ def get_defaultparams(platerun):
         default_params[platerun] = dparams
         return dparams
 
-
 def get_cartons_table(platerun):
     dparams = get_defaultparams(platerun)
     list_version = dparams.loc['carton_list_version']['Value']
@@ -135,7 +134,6 @@ def get_cartons_table(platerun):
         carton_table['fp_program'] = get_program_names(carton_table)
         cartons[platerun] = carton_table
         return carton_table
-
 
 
 class Field:
@@ -280,7 +278,7 @@ class Field:
         return full_table
 
     @property
-    def plateinput(self):
+    def targets(self):  # Loads full plateInput table
         try:
             return self._plateinput
         except AttributeError:
@@ -288,7 +286,7 @@ class Field:
             return self._plateinput
 
     @property
-    def targets(self):  # Loads targets_clean file
+    def clean_targets(self):  # Loads targets_clean file
         try:
             return self._targets
         except AttributeError:
@@ -296,7 +294,7 @@ class Field:
             return self._targets
 
     @property
-    def input_targets(self):  # Loads targets.txt file
+    def available_targets(self):  # Loads targets.txt file
         try:
             return self._input_targets
         except AttributeError:
@@ -367,7 +365,6 @@ class Field:
 
 
 
-
 class Platerun:
     """
     Class to act as interface to platerun in five_plates repository.
@@ -379,6 +376,7 @@ class Platerun:
         self.name = run_name
         self.platedata = io.load_fp_platedata(run_name)
         self.fieldnames = self._get_fields()
+        self.designIDs = self._get_designIDs()
         self._filling_modes = self._get_filling_modes()
         self._defaultparams = io.load_fp_defaultparams(run_name)
         self.fill_priorities = self._parse_fill_priorities()
@@ -389,9 +387,12 @@ class Platerun:
     def _get_fields(self):
         return list(self.platedata['FIELD'])
 
+    def _get_designIDs(self):
+        return list(self.platedata['DESID'])
+
     def load_fields(self):
-        return [Field(fname, self.name) for fname in
-                self.fieldnames]
+        return [Field(fieldname, design_id=designID) for fieldname, designID in
+                zip(self.fieldnames, self.designIDs)]
 
     def _get_filling_modes(self):
         return list(set(self.platedata['FIBERFILLING']))
@@ -425,6 +426,7 @@ class Platerun:
         """
 
         table = vstack([field.targets for field in self.fields])
+        table.sort('catalogid')
         return table
 
     def _contains(self, catIDs):
