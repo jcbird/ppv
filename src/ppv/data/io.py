@@ -70,13 +70,45 @@ def load_fiveplates_description():
     return  Table.read(os.fspath(description_file), format='ascii.commented_header')
 
 def load_fp_platedata(platerun, **table_kwds):
+    """
+    table format for platedata has changed a lot from run to run.
+    Hoping to standardize. For now, this is a little hacky and fragile
+    if five_plates makes further changes.
+    """
     platedata_file = paths.fp_platedata(platerun)
+    standard_names = ['FieldName',
+                      'PlateID',
+                      'DesignID',
+                      'LocationID',
+                      'RA',
+                      'Dec',
+                      'Epoch',
+                      'Radius',
+                      'HA',
+                      'CadenceCategory',
+                      'Priority',
+                      'FiberFilling',
+                      'NSky_APOGEE',
+                      'NStd_APOGEE',
+                      'NSky_BOSS',
+                      'NStd_BOSS',
+                      'Platerun']
     if platedata_file.exists():
         pass
     else:
         raise FileNotFoundError(os.fspath(platedata_file))
-    return  Table.read(os.fspath(platedata_file), format='ascii.commented_header',
-                       **table_kwds)
+    pd_table = Table.read(os.fspath(platedata_file),
+                          format='ascii.commented_header',
+                          **table_kwds)
+    pd_table.rename_columns(pd_table.colnames, standard_names)
+
+    if pd_table['Platerun'][0] == platerun:
+        pass  # All is well
+    else:   # If 'Notes column or something like that
+        pd_table['Platerun'] = [platerun] * len(pd_table)
+
+    return pd_table
+
 
 def load_fp_defaultparams(platerun):
     params_file = paths.fp_defaultparams(platerun)
