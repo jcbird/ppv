@@ -180,26 +180,8 @@ class Field:
                                                       self.name,
                                                       self.designID)
         self._fiber_filling = self._get_filling_scheme()
-<<<<<<< HEAD
-        # Only ONE targets file per field as of now
-        # can load when needed for now
-        self._colnames = {'catalogid': 'Catalog_id'}
-        self._cartons_table = io.load_fiveplates_cartons(platerun_name)
-        self._priority_order = io.load_fiveplates_priority(platerun_name,
-                                                           self._fiber_filling)
-=======
         self._program_priorities = io.load_fiveplates_priority(self.platerun,
                                                                self._fiber_filling)
-        # # self.platerun, self.programname = self.meta()
-        # # Only ONE targets file per field as of now
-        # # can load when needed for now
-        # self._colnames = {'catalogid': 'Catalog_id'}
-        # self._cartons_table = io.load_fiveplates_cartons(platerun_name)
-        # self._program_names = self._get_program_names()
-        # self._program_name_fix = {old: new for old, new in
-        #                           zip(self._cartons_table['program'],
-        #                               self._program_names)}
->>>>>>> fp_changes
 
     def __repr__(self):
         return f'five_plates Field({self.name!r})'
