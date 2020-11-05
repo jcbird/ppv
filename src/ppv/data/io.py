@@ -61,6 +61,65 @@ def load_plansummary():
     return Table.read(os.fspath(paths.plate_plans()), format='fits')
 
 
+def load_fiveplates_description():
+    description_file = paths.fiveplates_description()
+    if description_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(description_file))
+    return  Table.read(os.fspath(description_file), format='ascii.commented_header')
+
+def load_fp_platedata(platerun, **table_kwds):
+    """
+    table format for platedata has changed a lot from run to run.
+    Hoping to standardize. For now, this is a little hacky and fragile
+    if five_plates makes further changes.
+    """
+    platedata_file = paths.fp_platedata(platerun)
+    standard_names = ['FieldName',
+                      'PlateID',
+                      'DesignID',
+                      'LocationID',
+                      'RA',
+                      'Dec',
+                      'Epoch',
+                      'Radius',
+                      'HA',
+                      'CadenceCategory',
+                      'Priority',
+                      'FiberFilling',
+                      'NSky_APOGEE',
+                      'NStd_APOGEE',
+                      'NSky_BOSS',
+                      'NStd_BOSS',
+                      'Platerun']
+    if platedata_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(platedata_file))
+    pd_table = Table.read(os.fspath(platedata_file),
+                          format='ascii.commented_header',
+                          **table_kwds)
+    pd_table.rename_columns(pd_table.colnames, standard_names)
+
+    if pd_table['Platerun'][0] == platerun:
+        pass  # All is well
+    else:   # If 'Notes column or something like that
+        pd_table['Platerun'] = [platerun] * len(pd_table)
+
+    return pd_table
+
+
+def load_fp_defaultparams(platerun):
+    params_file = paths.fp_defaultparams(platerun)
+    if params_file.exists():
+        pass
+    else:
+        raise FileNotFoundError(os.fspath(params_file))
+    dp_table =  Table.read(os.fspath(params_file), format='ascii.commented_header')
+    dp_table.add_index('Parameter')
+    return dp_table
+
 def load_fiveplates_summary(platerun):
     """
     """
@@ -71,10 +130,10 @@ def load_fiveplates_summary(platerun):
         raise FileNotFoundError(os.fspath(summary_file))
     return Table.read(os.fspath(summary_file), format='ascii')
 
-def load_fiveplates_cartons(platerun):
+def load_fiveplates_cartons(platerun, version):
     """
     """
-    cartons_file = paths.fiveplates_cartons(platerun)
+    cartons_file = paths.fiveplates_cartons(platerun, version=version)
     if cartons_file.exists():
         pass
     else:
@@ -117,4 +176,41 @@ def load_fiveplates_field(platerun, field_file_string):
     with ZipFile(os.fspath(fields_zip)) as fp_zip:
         with fp_zip.open(field_file_string, 'r') as field:
             data = Table.read(field, format='ascii.commented_header')
+    return data
+
+def is_comment(s):
+    return s.startswith('#')
+
+def str_to_number_if_number(s):
+    try:
+        return int(s) if float(s) == int(float(s)) else float(s)
+    except ValueError:  #  it's a string
+        return s
+
+def fp_platedef_params(platerun, field, designID):
+    targetlists_zip = paths.fiveplates_targetlists(platerun)
+    params = {}
+    with ZipFile(os.fspath(targetlists_zip)) as tl_zip:
+        with tl_zip.open(paths.fiveplates_platedef(field, designID), 'r') as pldef:
+            rows = pldef.readlines()
+            for row in rows:
+                row = row.decode() # ZipFile must put this in bytes
+                items_ = row.strip().split() # split on whitespace
+                if row.startswith('#') or len(items_) < 2:
+                    continue
+                key = items_[0]
+                if len(items_) == 2:   # simple key:value pair
+                    value = str_to_number_if_number(items_[1])
+                else: # it's a list
+                    value = items_[1:]
+                    value = [str_to_number_if_number(val) for val in value]
+                params[key] = value
+    return params
+
+def fp_plateinput(platerun, field, designID, inputfile):
+    targetlists_zip = paths.fiveplates_targetlists(platerun)
+    with ZipFile(os.fspath(targetlists_zip)) as tl_zip:
+        pl_input_path_str = f'{paths.fp_field_designID_dir(field, designID)}/{inputfile}'
+        with tl_zip.open(pl_input_path_str, 'r') as pl_input:
+            data = Table.read(pl_input, format='ascii.commented_header')
     return data

@@ -82,6 +82,13 @@ def plateholes(platenum):
 #  five_plates
 ##############
 
+def fiveplates_description():
+    """
+    path to description file in five_plates repo.
+    """
+    description_file = 'plateruns_description.txt'
+    return config.fiveplates_dir / description_file
+
 def _five_plates_relpaths():
     tree_ =  os.walk(config.fiveplates_dir)
     dirs_ = [Path(root_dir) for (root_dir, _, _) in tree_]
@@ -114,7 +121,32 @@ def fiveplates_platerun(platerun):
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
     """
-    return config.fiveplates_dir / _fp_name_to_dir[platerun]
+    return config.fiveplates_dir / platerun
+
+def fp_platedata(platerun):
+    """
+    path to summary file in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+    summary_file = f'plate_data_{platerun}.txt'
+    return fiveplates_platerun(platerun) / summary_file
+
+def fp_defaultparams(platerun):
+    """
+    path to default parameter file in five_plates repo.
+    One for each platerun
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+    param_file = f'{platerun}_default_parameters.txt'
+    return fiveplates_platerun(platerun) / param_file
 
 def fiveplates_summary(platerun):
     """
@@ -127,8 +159,8 @@ def fiveplates_summary(platerun):
     """
     summary_file = f'plate_data_{platerun}.txt'
     return fiveplates_platerun(platerun) / summary_file
-    
-def fiveplates_cartons(platerun):
+
+def fiveplates_cartons(platerun, version='v6'):
     """
     path to cartons file in five_plates repo.
 
@@ -137,9 +169,7 @@ def fiveplates_cartons(platerun):
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
     """
-    # Flexible path finding due to e.g., 'cartons_list.v5.txt'
-    files = os.listdir(fiveplates_platerun(platerun))
-    cartons_file = list(filter(lambda X: 'cartons_list' in X, files))[0]
+    cartons_file = f'cartons_list.{version}.txt'
     return fiveplates_platerun(platerun) / cartons_file
 
 def fiveplates_priority(platerun, filling_scheme):
@@ -157,6 +187,37 @@ def fiveplates_priority(platerun, filling_scheme):
     priority_file = f'{filling_scheme}_order.txt'
     return fiveplates_platerun(platerun) / priority_file
     
+
+def fiveplates_targetlists(platerun):
+    """
+    path to zip file containing targetlists in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+    """
+
+    target_files = f'{platerun}_targetlists.zip'
+    return fiveplates_platerun(platerun) / target_files
+
+
+def fp_field_designID_str(field, designID):
+    return f'{field}_des{designID}'
+
+
+def fp_field_designID_dir(field, designID):
+    return f'targetlists/{fp_field_designID_str(field, designID)}'
+
+
+def fiveplates_platedef(field, designID):
+    """
+    path to plate definition file WITHIN targetlists zip file.
+    """
+    pre_ = 'targetlists'
+    # platenum_as_str also works for designIDs, just zero-padding to 6 digits
+    pldef_file = f'plateDefinition-{platenum_as_str(designID)}.txt'
+    return f'{pre_}/{fp_field_designID_str(field, designID)}/{pldef_file}'
 
 def fiveplates_fieldfiles(platerun):
     """
