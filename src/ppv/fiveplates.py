@@ -27,7 +27,7 @@ import re
 # HARD CODING FOR NOW
 # TODO update when consensus reached with Felipe and Kevin
 
-_available = ['2020.08.a.bhm-mwm',
+_available = ['2020.08.x.bhm-mwm',
               '2020.10.x.mwm-bhm',
               '2020.10.y.mwm-bhm',
               '2020.09.y.bhm-mwm']
@@ -385,17 +385,17 @@ class Platerun:
                                                          self._carton_list_version)
 
     def _get_fields(self):
-        return list(self.platedata['FIELD'])
+        return list(self.platedata['FieldName'])
 
     def _get_designIDs(self):
-        return list(self.platedata['DESID'])
+        return list(self.platedata['DesignID'])
 
     def load_fields(self):
         return [Field(fieldname, design_id=designID) for fieldname, designID in
                 zip(self.fieldnames, self.designIDs)]
 
     def _get_filling_modes(self):
-        return list(set(self.platedata['FIBERFILLING']))
+        return list(set(self.platedata['FiberFilling']))
 
     def _parse_fill_priorities(self):
         """
@@ -417,6 +417,9 @@ class Platerun:
         try:
             return self._targets
         except AttributeError:
+            print(f"""Please be patient.
+                      Initial target loading can take up to 1 second per field.
+                      Loading target data from {len(self.fieldnames)} Fields...""")
             self._targets = self._load_table()
             return self._targets
 
