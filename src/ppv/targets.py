@@ -126,6 +126,9 @@ class Targets:
         Given a platerun, return a boolean array of all members that could be observed
         in any field of the platerun.
         """
+        print(f"""Please be patient.
+                  Initial target loading for Platerun can take up to 1 second per field.
+                  Loading target data from {len(platerun_.fieldnames)} Fields...""", flush=True)
         indx_all = [self.available_in(field) for field in platerun_.fields]
         return np.bitwise_or.reduce(indx_all)
 

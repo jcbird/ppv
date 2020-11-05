@@ -204,6 +204,9 @@ class Platerun:
         try:
             return self._targets
         except AttributeError:
+            print(f"""Please be patient.
+                      Initial target loading can take up to 1 second per field.
+                      Loading target data from {len(self.fieldnames)} Fields...""", flush=True)
             self._targets = self._load_table()
             return self._targets
 
@@ -250,7 +253,7 @@ class PlateRunMissingError(Exception):
         if self.message:
             first = f'\nPlateRunMissingError, {self.message} is not an available platerun'
             second = f'\n ======================================================== \n'
-            third = ' Run ppv.update() to update your platerun summary file and try again.'
+            third = ' Run ppv.ppv.update_platefiles() to update your platerun summary file and try again.'
             fourth = f'\n ======================================================== \n'
             return first + second + third + fourth
             # return f'PlateRunMissingError, {self.message} is not an available platerun'
