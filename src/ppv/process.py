@@ -14,7 +14,7 @@ from numpy.random import Generator, PCG64
 per field:
 
     get NSCI apogee, NSCI boss,
-    get NSTD, NSKY  
+    get NSTD, NSKY
     all of the above from defaultparameters
 
     convert targets table to DF

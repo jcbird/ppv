@@ -13,6 +13,7 @@ from . import ppv
 from .data import io
 from .util import scalar_column, paths
 from . import config
+from .process import simulate_platedesign
 from .parse_platedata import main_platedata
 import numpy as np
 from astropy import units as u
@@ -283,6 +284,39 @@ class Field:
         except AttributeError:
             self._input_targets = self._load_table('input')
             return self._input_targets
+
+    @property
+    def pseudo_plate(self):
+        try:
+            return self._pseudo_plate
+        except AttributeError:
+            self._pseudo_plate = self._sim_science_targs()
+            return self._pseudo_plate
+
+    def _sim_science_targs(self, random_seed=None):
+        """
+        Calls process.simulate_platedesign to create table of SCIENCE targets
+        that will likey be/ will be assigned a fiber once through plate design.
+        Starts with the targetlists table.
+
+        Parameters
+        ----------
+        random_seed : int
+            if None, default random seed in process.simulate_platedesign will
+            be used.
+        """
+        nBOSS_science = self._platedef_params['nBOSS_science']
+        nAPOGEE_science = self._platedef_params['nAPOGEE_science']
+
+        if isinstance(random_seed, int):
+            return simulate_platedesign(self.targets,
+                                        nAPOGEE_science,
+                                        nBOSS_science,
+                                        random_seed=random_seed)
+        else:
+            return simulate_platedesign(self.targets,
+                                        nAPOGEE_science,
+                                        nBOSS_science)
 
     def _load_table(self, clean_or_input):
         """
