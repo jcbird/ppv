@@ -83,6 +83,9 @@ target/
 # Mac OS-specific storage files
 .DS_Store
 
+# emacs load conda virtual environment
+.dir-locals.el
+
 # vim
 *.swp
 *.swo
