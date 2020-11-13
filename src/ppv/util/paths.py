@@ -227,7 +227,10 @@ def fiveplates_fieldfiles(platerun):
     ----------
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+
+    field_files is either 'field_files' or 'design_files
     """
+
     field_files = f'{platerun}_field_files.zip'
     return fiveplates_platerun(platerun) / field_files
 
@@ -254,3 +257,44 @@ def fiveplates_field_file(field):
         identifier of field, e.g. 'GG_010'
     """
     return f'{field}_targets.txt'
+
+def fiveplates_designfiles(platerun):
+    """
+    path to zip file containing designs_files in five_plates repo.
+
+    Parameters
+    ----------
+    platerun : str
+        identifier of platerun, e.g. '2020.08.x.mwm-bhm'
+
+    design_files is either 'design_files' or 'design_files
+    """
+
+    design_files = f'{platerun}_design_files.zip'
+    return fiveplates_platerun(platerun) / design_files
+
+
+def fiveplates_clean_design_file(field, designID):
+    """
+    string representation of targets_clean file for field within
+    fiveplates_field_files zip file.
+
+    Parameters
+    ----------
+    field : str
+        identifier of field, e.g. 'GG_010'
+    """
+    return f'{field}_des{designID}_targets_clean.txt'
+
+def fiveplates_design_file(field, designID):
+    """
+    string representation of targets file for field within
+    fiveplates_design_files zip file.
+
+    Parameters
+    ----------
+    field : str
+        identifier of field, e.g. 'GG_010'
+    """
+    return f'{field}_des{designID}_targets.txt'
+
