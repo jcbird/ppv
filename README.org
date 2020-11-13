@@ -3,7 +3,7 @@
 Tools for dealing with SDSS-V plate files and plate runs.
 * Installation
 :PROPERTIES:
-:header-args:  :exports code
+:header-args:  :results silent
 :END:
 
 - *Setup environment* (optional, but recommended) \\
