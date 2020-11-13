@@ -148,16 +148,18 @@ class Targets:
         """
         return np.in1d(self.catalogid, catalogIDs)
 
-    def assigned_in(self, pl_field_plrun):
+    def assigned_in(self, pl_field_plrun, table='targets'):
         """
         Given a Plate, Field, or PlateRun instance, return a boolean array
         representing if each Target member was assigned a fiber according
         to catalogID.
         """
-        indx = self._assigned_indx.get(pl_field_plrun.name,
-                                       self._within(pl_field_plrun.targets['catalogid']))
-        if pl_field_plrun.name not in self._assigned_indx:
-            self._assigned_indx[pl_field_plrun.name] = indx
+        indx_key = (pl_field_plrun.name, table)
+        _lookin_table = getattr(pl_field_plrun, table)
+        indx = self._assigned_indx.get(indx_key,
+                                       self._within(_lookin_table['catalogid']))
+        if indx_key not in self._assigned_indx:
+            self._assigned_indx[indx_key] = indx
         return indx
 
     def assigned_info(self, pl_field_plrun):
