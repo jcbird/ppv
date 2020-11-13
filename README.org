@@ -20,7 +20,11 @@ Tools for dealing with SDSS-V plate files and plate runs.
   #+BEGIN_SRC shell
   git clone https://github.com/jcbird/ppv.git  # clone repository
   cd ppv
-  python setup.py install  # install ==ppv== package
+  #+END_SRC
+  Install with ~pip~. Note the =-e= option. With this option, `pip` will automatically reinstall ~ppv~ when you pull the latest commit. Very handy!
+
+  #+BEGIN_SRC shell
+  pip install -e .    # installs ppv package
   #+END_SRC
 
 - *Requirements* <<require>>
