@@ -26,7 +26,6 @@ Tools for dealing with SDSS-V plate files and plate runs.
   #+BEGIN_SRC shell
   pip install -e .    # installs ppv package
   #+END_SRC
-
 - *Requirements* <<require>>
   - python (>3.5, 3.8 preferred) [if this frightens you, read on]
   - astropy
