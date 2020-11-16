@@ -159,7 +159,7 @@ def load_fiveplates_priority(platerun, filling_scheme):
     priority_table.add_index('program')
     return priority_table
 
-def load_fiveplates_field(platerun, field_file_string):
+def load_fiveplates_field(platerun, field, designID, type='clean'):
     """
     path to zip file containing fields_files in five_plates repo.
 
@@ -171,10 +171,20 @@ def load_fiveplates_field(platerun, field_file_string):
         typically the output of paths.fiveplates_clean_field_file OR
         paths.fiveplates_field_file 
     """
-    fields_zip = paths.fiveplates_fieldfiles(platerun)
-
-    with ZipFile(os.fspath(fields_zip)) as fp_zip:
-        with fp_zip.open(field_file_string, 'r') as field:
+    if paths.fiveplates_designfiles(platerun).exists():
+        field_zip = paths.fiveplates_designfiles(platerun)
+        if type=='clean':
+            field_file_str = paths.fiveplates_clean_design_file(field, designID)
+        else:
+            field_file_str = paths.fiveplates_design_file(field, designID) # 'input'
+    else:  # platerun before the switch to designfiles zip
+        field_zip = paths.fiveplates_fieldfiles(platerun)
+        if type=='clean':
+            field_file_str = paths.fiveplates_clean_field_file(field)
+        else:
+            field_file_str = paths.fiveplates_field_file(field) # 'input'
+    with ZipFile(os.fspath(field_zip)) as fp_zip:
+        with fp_zip.open(field_file_str, 'r') as field:
             data = Table.read(field, format='ascii.commented_header')
     return data
 

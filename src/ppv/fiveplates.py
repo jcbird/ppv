@@ -327,12 +327,10 @@ class Field:
         clean_or_input: str
             contains 'clean' for targets_clean.
         """
-        if 'clean' in clean_or_input:
-            field_file = paths.fiveplates_clean_field_file(self.name)
-        else:
-            field_file = paths.fiveplates_field_file(self.name)
-
-        data = io.load_fiveplates_field(self.platerun, field_file)
+        data = io.load_fiveplates_field(self.platerun,
+                                        self.name,
+                                        self.designID,
+                                        type=clean_or_input)   # 'clean' OR 'input'
         data.rename_column('Catalog_id', 'catalogid')  # keep consistent with plates
         N_targets = len(data)
         field_column = Column(data=[self.name] * N_targets,
