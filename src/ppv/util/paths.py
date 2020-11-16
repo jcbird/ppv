@@ -4,6 +4,7 @@ Utility module
 from .. import config
 from pathlib import Path
 import os
+import fnmatch
 
 
 def platePlans_par():
@@ -123,6 +124,14 @@ def fiveplates_platerun(platerun):
     """
     return config.fiveplates_dir / platerun
 
+def fp_files(platerun):
+    """
+    get list of files in a five_plates platerun directory.
+    Useful for fuzzyish file finding.
+    """
+    return os.listdir(fiveplates_platerun(platerun))
+
+
 def fp_platedata(platerun):
     """
     path to summary file in five_plates repo.
@@ -132,8 +141,13 @@ def fp_platedata(platerun):
     platerun : str
         identifier of platerun, e.g. '2020.08.x.mwm-bhm'
     """
-    summary_file = f'plate_data_{platerun}.txt'
-    return fiveplates_platerun(platerun) / summary_file
+
+    _guess = f'plate_data_{platerun}*.txt'
+    pd_file_s = filter(lambda F: fnmatch.fnmatch(F, _guess),
+                       fp_files(platerun))
+    # Assuming only one file is retuned 
+    pd_file = next(pd_file_s)
+    return fiveplates_platerun(platerun) / pd_file
 
 def fp_defaultparams(platerun):
     """
