@@ -61,13 +61,15 @@ def load_plansummary():
     return Table.read(os.fspath(paths.plate_plans()), format='fits')
 
 
-def load_fiveplates_description():
-    description_file = paths.fiveplates_description()
-    if description_file.exists():
+def _load_commented_header(file_path):
+    if file_path.exists():
         pass
     else:
-        raise FileNotFoundError(os.fspath(description_file))
-    return  Table.read(os.fspath(description_file), format='ascii.commented_header')
+        raise FileNotFoundError(os.fspath(file_path))
+    return  Table.read(os.fspath(file_path), format='ascii.commented_header')
+
+def load_fp_description():
+    return _load_commented_header(paths.fiveplates_description())
 
 def load_fp_platedata(platerun, **table_kwds):
     """
