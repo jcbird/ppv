@@ -6,12 +6,14 @@ CLOSED: [2020-11-03 Tue 12:18]
 CLOSED: [2020-11-03 Tue 12:18]
 ** DONE Redo PPV_fiveplates notebook in fp_changes branch
 CLOSED: [2020-11-05 Thu 15:37]
-** TODO Do psuedo-observing function
+** DONE Do psuedo-observing function
+CLOSED: [2020-11-13 Fri 15:56]
 ** TODO Document all FP functionality along with RTD
 ** TODO Have ppv do git pull of five_plates
 ** TODO Update Groups to have field/designID combo and modify Plate
 Have plate just point to Field and incorporate functionality of Plate into Field. Do this with a base class and just inherit both Field and Plate.
 ** TODO Lookups of program priority FROM platedesign Groups
 from platedesign TO five_plates
+** TODO Incorporate plateruns_description for new runs
 ** DONE Platerun unavailable Message change
 CLOSED: [2020-11-04 Wed 16:42]
