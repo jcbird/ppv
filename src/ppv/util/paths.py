@@ -101,17 +101,6 @@ def _five_plates_available_plateruns():
     relpaths = _five_plates_relpaths()
     return [relpath.name for relpath in relpaths]
 
-def _map_fp_name_dir():
-    """
-    Make dictonary mapping name of the platerun to the directory
-    under the hood. This absracts away 'first_drafts' directory from
-    the user.
-    """
-    relpaths = _five_plates_relpaths()
-    names = [relpath.name for relpath in relpaths]
-    return {name: relpath for name, relpath in zip(names, relpaths)}
-
-_fp_name_to_dir = _map_fp_name_dir()
 
 def fiveplates_platerun(platerun):
     """
