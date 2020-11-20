@@ -17,3 +17,4 @@ from platedesign TO five_plates
 ** TODO Incorporate plateruns_description for new runs
 ** DONE Platerun unavailable Message change
 CLOSED: [2020-11-04 Wed 16:42]
+** TODO plate_data - fix 2020.08.x and finding plate_data file
