@@ -194,7 +194,7 @@ class Field:
         if isinstance(indx, list):  # multiple indices
             # better have DesignID then
             try:
-                return main_platedata.loc_indices['DesignID', self.designID]
+                return main_platedata.loc_indices['designid', self.designID]
             except TypeError:
                 print('Field: {self.name!r} has multiple designs.')
                 print('Design: {self.designID!r} not found.')
