@@ -61,15 +61,55 @@ def load_plansummary():
     return Table.read(os.fspath(paths.plate_plans()), format='fits')
 
 
-def _load_commented_header(file_path):
+def _load_commented_header(file_path, **table_kwds):
     if file_path.exists():
         pass
     else:
         raise FileNotFoundError(os.fspath(file_path))
-    return  Table.read(os.fspath(file_path), format='ascii.commented_header')
+    return  Table.read(os.fspath(file_path),
+                       format='ascii.commented_header',
+                       **table_kwds)
 
 def load_fp_description():
-    return _load_commented_header(paths.fiveplates_description())
+    colnames = ['OriginalName', 'Nplates_o',
+                'FinalName', 'Nplates_f',
+                'CurrName', 'NeededBy',
+                'Notes']
+    return _load_commented_header(paths.fiveplates_description(),
+                                  names=colnames)
+
+
+_pd_2020_08_x_colnames = ['fieldname',
+                          'version',
+                          'plateid',
+                          'designid',
+                          'locationid',
+                          'raCen',
+                          'decCen',
+                          'epoch',
+                          'radius',
+                          'ha',
+                          'fiberfilling',
+                          'priority',
+                          'platerun',
+                          'notes']
+
+_pd_standard_colnames = ['fieldname',
+                  'plateid',
+                  'designid',
+                  'locationid',
+                  'raCen',
+                  'decCen',
+                  'epoch',
+                  'radius',
+                  'ha',
+                  'cadencecategory',
+                  'priority',
+                  'fiberfilling',
+                  'Nsky_APOGEE',
+                  'Nstd_APOGEE',
+                  'Nsky_BOSS',
+                  'Nstd_BOSS']
 
 def load_fp_platedata(platerun, **table_kwds):
     """
@@ -77,38 +117,19 @@ def load_fp_platedata(platerun, **table_kwds):
     Hoping to standardize. For now, this is a little hacky and fragile
     if five_plates makes further changes.
     """
-    platedata_file = paths.fp_platedata(platerun)
-    standard_names = ['FieldName',
-                      'PlateID',
-                      'DesignID',
-                      'LocationID',
-                      'RA',
-                      'Dec',
-                      'Epoch',
-                      'Radius',
-                      'HA',
-                      'CadenceCategory',
-                      'Priority',
-                      'FiberFilling',
-                      'NSky_APOGEE',
-                      'NStd_APOGEE',
-                      'NSky_BOSS',
-                      'NStd_BOSS',
-                      'Platerun']
-    if platedata_file.exists():
-        pass
+    pd_table = _load_commented_header(paths.fp_platedata(platerun))
+
+    if platerun == '2020.08.x.bhm-mwm':  # different table colnames
+        pd_table.rename_columns(pd_table.colnames, _pd_2020_08_x_colnames)
     else:
-        raise FileNotFoundError(os.fspath(platedata_file))
-    pd_table = Table.read(os.fspath(platedata_file),
-                          format='ascii.commented_header',
-                          **table_kwds)
-    pd_table.rename_columns(pd_table.colnames, standard_names)
-
-    if pd_table['Platerun'][0] == platerun:
-        pass  # All is well
-    else:   # If 'Notes column or something like that
-        pd_table['Platerun'] = [platerun] * len(pd_table)
-
+        # check if 'platerun' column exists
+        pd_colnames_lower = [col.lower() for col in pd_table.colnames]
+        if 'platerun' in pd_colnames_lower:
+            pd_table.rename_columns(pd_table.colnames, _pd_standard_colnames + ['platerun'])
+        else:   # need to add platerun
+            pd_table.rename_columns(pd_table.colnames, _pd_standard_colnames + ['notes'])
+            Nrows = len(pd_table)
+            pd_table['platerun'] = [platerun] * Nrows
     return pd_table
 
 
