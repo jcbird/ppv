@@ -9,7 +9,7 @@ Field:
 Platerun: 
 
 """
-from . import ppv
+from . import _fp_available
 from .data import io
 from .util import scalar_column, paths
 from . import config
@@ -24,26 +24,22 @@ from astropy.io import ascii
 import os
 
 
+# Getting plateruns
+
+_description = io.load_fp_description()
+
+
 # HARD CODING FOR NOW
 # TODO update when consensus reached with Felipe and Kevin
 
-_available = ['2020.08.x.bhm-mwm',
-              '2020.10.x.mwm-bhm',
-              '2020.10.y.mwm-bhm',
-              '2020.09.y.bhm-mwm']
+_available = list(_description['OriginalName'])
 
 #  Needs to be in same order as _available
-_prefect_name = ['N/A',
-                 '2020.10.a.mwm-bhm',
-                 '2020.10.c.mwm-bhm',
-                 'N/A']
+_prefect_name = list(_description['FinalName'])
 
-
-_prefect_to_fp_name = {prefect_name : fp_name for
+_fp_to_prefect_name = {fp_name : prefect_name for
                        prefect_name, fp_name in
-                       zip(_available, _prefect_name)}
-
-
+                       zip(_prefect_name, _available)}
 
 # Get main plate-data, this is akin to platePlan.par
 
@@ -56,7 +52,7 @@ def replace_space(val):
 # get possible plateruns
 
 def available_plateruns():
-    return _available
+    return sorted(list(_fp_available))
 
 
 def get_program_names(cartons_table):
