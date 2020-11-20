@@ -9,8 +9,8 @@ platedata_tables = [io.load_fp_platedata(prun) for prun
                     in plateruns]
 
 main_platedata = vstack(platedata_tables)
-main_platedata.add_index('designid')
 main_platedata.add_index('fieldname')
+main_platedata.add_index('designid')
 
 
 
