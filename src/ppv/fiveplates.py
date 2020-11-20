@@ -9,7 +9,7 @@ Field:
 Platerun: 
 
 """
-from . import ppv
+from . import _fp_available
 from .data import io
 from .util import scalar_column, paths
 from . import config
@@ -24,26 +24,22 @@ from astropy.io import ascii
 import os
 
 
+# Getting plateruns
+
+_description = io.load_fp_description()
+
+
 # HARD CODING FOR NOW
 # TODO update when consensus reached with Felipe and Kevin
 
-_available = ['2020.08.x.bhm-mwm',
-              '2020.10.x.mwm-bhm',
-              '2020.10.y.mwm-bhm',
-              '2020.09.y.bhm-mwm']
+_available = list(_description['OriginalName'])
 
 #  Needs to be in same order as _available
-_prefect_name = ['N/A',
-                 '2020.10.a.mwm-bhm',
-                 '2020.10.c.mwm-bhm',
-                 'N/A']
+_prefect_name = list(_description['FinalName'])
 
-
-_prefect_to_fp_name = {prefect_name : fp_name for
+_fp_to_prefect_name = {fp_name : prefect_name for
                        prefect_name, fp_name in
-                       zip(_available, _prefect_name)}
-
-
+                       zip(_prefect_name, _available)}
 
 # Get main plate-data, this is akin to platePlan.par
 
@@ -56,7 +52,7 @@ def replace_space(val):
 # get possible plateruns
 
 def available_plateruns():
-    return _available
+    return sorted(list(_fp_available))
 
 
 def get_program_names(cartons_table):
@@ -198,7 +194,7 @@ class Field:
         if isinstance(indx, list):  # multiple indices
             # better have DesignID then
             try:
-                return main_platedata.loc_indices['DesignID', self.designID]
+                return main_platedata.loc_indices['designid', self.designID]
             except TypeError:
                 print('Field: {self.name!r} has multiple designs.')
                 print('Design: {self.designID!r} not found.')
@@ -207,23 +203,23 @@ class Field:
             return indx
 
     def _fetch_designID(self):
-        return self._pdata['DesignID']
+        return self._pdata['designid']
 
     def _get_epoch(self):
-        return self._pdata['Epoch']
+        return self._pdata['epoch']
 
     def _get_radius(self):
-        return self._pdata['Radius']
+        return self._pdata['radius']
 
     def _get_filling_scheme(self):
-        return self._pdata['FiberFilling']
+        return self._pdata['fiberfilling']
 
     def _get_platerun(self):
-        return self._pdata['Platerun']
+        return self._pdata['platerun']
 
     def _center(self):
-        ra = self._pdata['RA']
-        dec = self._pdata['Dec']
+        ra = self._pdata['raCen']
+        dec = self._pdata['decCen']
         return ra, dec
 
     def firstcarton_program_name(self, carton):
@@ -258,7 +254,7 @@ class Field:
         full_table.add_column(scalar_column(self.name, len(full_table),
                                             'field'))
         full_table.add_column(scalar_column(self.designID, len(full_table),
-                                            'designID'))
+                                            'designid'))
         return full_table
 
     @property
@@ -400,17 +396,17 @@ class Platerun:
                                                          self._carton_list_version)
 
     def _get_fields(self):
-        return list(self.platedata['FieldName'])
+        return list(self.platedata['fieldname'])
 
     def _get_designIDs(self):
-        return list(self.platedata['DesignID'])
+        return list(self.platedata['designid'])
 
     def load_fields(self):
         return [Field(fieldname, design_id=designID) for fieldname, designID in
                 zip(self.fieldnames, self.designIDs)]
 
     def _get_filling_modes(self):
-        return list(set(self.platedata['FiberFilling']))
+        return list(set(self.platedata['fiberfilling']))
 
     def _parse_fill_priorities(self):
         """

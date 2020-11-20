@@ -124,3 +124,4 @@ class Summary:
 
 
 ppv = Summary()
+_fp_available = set(data_io.load_fp_description()['OriginalName'])
