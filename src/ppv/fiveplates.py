@@ -203,23 +203,23 @@ class Field:
             return indx
 
     def _fetch_designID(self):
-        return self._pdata['DesignID']
+        return self._pdata['designid']
 
     def _get_epoch(self):
-        return self._pdata['Epoch']
+        return self._pdata['epoch']
 
     def _get_radius(self):
-        return self._pdata['Radius']
+        return self._pdata['radius']
 
     def _get_filling_scheme(self):
-        return self._pdata['FiberFilling']
+        return self._pdata['fiberfilling']
 
     def _get_platerun(self):
-        return self._pdata['Platerun']
+        return self._pdata['platerun']
 
     def _center(self):
-        ra = self._pdata['RA']
-        dec = self._pdata['Dec']
+        ra = self._pdata['raCen']
+        dec = self._pdata['decCen']
         return ra, dec
 
     def firstcarton_program_name(self, carton):
@@ -254,7 +254,7 @@ class Field:
         full_table.add_column(scalar_column(self.name, len(full_table),
                                             'field'))
         full_table.add_column(scalar_column(self.designID, len(full_table),
-                                            'designID'))
+                                            'designid'))
         return full_table
 
     @property
@@ -396,17 +396,17 @@ class Platerun:
                                                          self._carton_list_version)
 
     def _get_fields(self):
-        return list(self.platedata['FieldName'])
+        return list(self.platedata['fieldname'])
 
     def _get_designIDs(self):
-        return list(self.platedata['DesignID'])
+        return list(self.platedata['designid'])
 
     def load_fields(self):
         return [Field(fieldname, design_id=designID) for fieldname, designID in
                 zip(self.fieldnames, self.designIDs)]
 
     def _get_filling_modes(self):
-        return list(set(self.platedata['FiberFilling']))
+        return list(set(self.platedata['fiberfilling']))
 
     def _parse_fill_priorities(self):
         """
