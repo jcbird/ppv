@@ -194,7 +194,12 @@ class Field:
         if isinstance(indx, list):  # multiple indices
             # better have DesignID then
             try:
-                return main_platedata.loc_indices['designid', self.designID]
+                # Five plates MAY have multiple lines in plate_data that correspond
+                # to EXACT SAME design. Need to be flexible here.
+                indx = main_platedata.loc_indices['designid', self.designID]
+                if isinstance(indx, list):  # multiple lines, one design
+                    indx = indx[0]
+                return indx
             except TypeError:
                 print('Field: {self.name!r} has multiple designs.')
                 print('Design: {self.designID!r} not found.')
