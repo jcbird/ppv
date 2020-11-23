@@ -134,9 +134,22 @@ def fp_platedata(platerun):
     _guess = f'plate_data_{platerun}*.txt'
     pd_file_s = filter(lambda F: fnmatch.fnmatch(F, _guess),
                        fp_files(platerun))
-    # Assuming only one file is retuned 
-    pd_file = next(pd_file_s)
-    return fiveplates_platerun(platerun) / pd_file
+    # Assuming only one file is retuned
+    try:
+        pd_file = next(pd_file_s)
+        return fiveplates_platerun(platerun) / pd_file
+    except StopIteration:
+        _message = f'''\
+                       Unable to load fiveplates plate data file for:
+                       {platerun}.
+                       Please IGNORE this warning UNLESS:
+                       You need to access fiveplates data for this platerun,
+                       please confirm the plate_data file exists and
+                       perform a fresh pull of five_plates.
+                    '''
+        print(_message)
+        return None
+
 
 def fp_defaultparams(platerun):
     """
