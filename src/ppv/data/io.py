@@ -70,11 +70,12 @@ def _load_commented_header(file_path, **table_kwds):
                        format='ascii.commented_header',
                        **table_kwds)
 
+
 def load_fp_description():
     colnames = ['OriginalName', 'Nplates_o',
                 'FinalName', 'Nplates_f',
                 'CurrName', 'NeededBy',
-                'Notes']
+                'Notes', 'Cartonlist', 'Scripts_Date']
     return _load_commented_header(paths.fiveplates_description(),
                                   names=colnames)
 
