@@ -148,4 +148,9 @@ def _get_dry_run_str(dry_run):
         return ''
 
 
-# TODO make function for plateplans.par file
+### Do a pull of five_plates automatically
+
+def _pull_fiveplates():
+    # repo_dir = config.fiveplates_dir.parent
+    pass
+
