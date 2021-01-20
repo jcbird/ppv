@@ -136,7 +136,11 @@ def fp_platedata(platerun):
                        fp_files(platerun))
     # Assuming only one file is retuned
     try:
-        pd_file = next(pd_file_s)
+        pd_files = list(pd_file_s)
+        if len(pd_files) == 1:
+            pd_file = pd_files[0]
+        else:
+            pd_file = list(filter(lambda F: 'initial' in F, pd_files))[0]
         return fiveplates_platerun(platerun) / pd_file
     except StopIteration:
         _message = f'''\
