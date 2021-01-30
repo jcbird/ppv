@@ -243,8 +243,13 @@ def fp_platedef_params(platerun, field, designID):
 
 def fp_plateinput(platerun, field, designID, inputfile):
     targetlists_zip = paths.fiveplates_targetlists(platerun)
-    with ZipFile(os.fspath(targetlists_zip)) as tl_zip:
-        pl_input_path_str = f'{paths.fp_field_designID_dir(field, designID)}/{inputfile}'
-        with tl_zip.open(pl_input_path_str, 'r') as pl_input:
-            data = Table.read(pl_input, format='ascii.commented_header')
+    try:
+        with ZipFile(os.fspath(targetlists_zip)) as tl_zip:
+            pl_input_path_str = f'{paths.fp_field_designID_dir(field, designID)}/{inputfile}'
+            with tl_zip.open(pl_input_path_str, 'r') as pl_input:
+                data = Table.read(pl_input, format='ascii.commented_header')
+    except KeyError:   # The file was not in the zip archive
+        print(f'warning: {paths.fp_field_designID_dir(field, designID)}/{inputfile} does not exist.')
+        print(f'please ignore if platerun was prior to MWM_04')
+        return None
     return data

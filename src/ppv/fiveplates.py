@@ -19,7 +19,7 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
-from astropy.table import vstack, Column
+from astropy.table import vstack, Column, Table
 from astropy.io import ascii
 import os
 
@@ -233,6 +233,11 @@ class Field:
     def _process_plateinput(self, targetlist_filename):
         targetlist_table = io.fp_plateinput(self.platerun, self.name,
                                             self.designID, targetlist_filename)
+        if targetlist_table == None:
+            # NO targetlist_table exists! This is for plateruns before MWM_04
+            empty_table = Table()
+            return empty_table
+
         priority_program_name = parse_program_name_from_file(self.name, self.designID,
                                                              targetlist_filename)
         instrument = parse_instrument_name_from_file(self.name, self.designID,
@@ -249,10 +254,10 @@ class Field:
 
     def _full_plateinput_table(self):
         _plateinput_filenames = plateInput_files(self._platedef_params)
-        # APOGEE standards made separately! ARRGGGHHH
+        # APOGEE standards made separately prior to MWM_04! ARRGGGHHH
         plinput_tables = [self._process_plateinput(targetlist_file) for
-                          targetlist_file in _plateinput_filenames if
-                          'apogee_STA' not in targetlist_file]
+                          targetlist_file in _plateinput_filenames]
+        # if 'apogee_STA' not in targetlist_file]
         full_table = vstack(plinput_tables)
         full_table.rename_column('Catalog_id', 'catalogid')
         full_table.sort('catalogid')
