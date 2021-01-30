@@ -132,17 +132,12 @@ def fp_platedata(platerun):
     """
 
     _guess = f'plate_data_{platerun}*.txt'
+
     pd_file_s = filter(lambda F: fnmatch.fnmatch(F, _guess),
                        fp_files(platerun))
-    # Assuming only one file is retuned
-    try:
-        pd_files = list(pd_file_s)
-        if len(pd_files) == 1:
-            pd_file = pd_files[0]
-        else:
-            pd_file = list(filter(lambda F: 'initial' in F, pd_files))[0]
-        return fiveplates_platerun(platerun) / pd_file
-    except StopIteration:
+
+    pd_files = list(pd_file_s)
+    if len(pd_files) == 0:  # no plate data yet
         _message = f'''\
                        Unable to load fiveplates plate data file for:
                        {platerun}.
@@ -153,6 +148,12 @@ def fp_platedata(platerun):
                     '''
         print(_message)
         return None
+    else:
+        if len(pd_files) == 1:
+            pd_file = pd_files[0]
+        else:
+            pd_file = list(filter(lambda F: 'initial' in F, pd_files))[0]
+        return fiveplates_platerun(platerun) / pd_file
 
 
 def fp_defaultparams(platerun):
