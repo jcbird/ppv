@@ -14,7 +14,7 @@ from .data import io
 from .util import scalar_column, paths
 from . import config
 from .process import simulate_platedesign
-from .parse_platedata import main_platedata
+from .parse_platedata import fp_plateplans
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
@@ -41,9 +41,14 @@ _fp_to_prefect_name = {fp_name : prefect_name for
                        prefect_name, fp_name in
                        zip(_prefect_name, _available)}
 
-# Get main plate-data, this is akin to platePlan.par
+plateruns = list(_fp_available)
+platedata_paths = [paths.fp_platedata(prun) for prun in plateruns]
 
-_platedata_full = main_platedata
+_plateruns_with_platedata = [prun for prun, pd_path in zip(plateruns, platedata_paths)
+                             if pd_path is not None]
+
+# Get main plate-data, this is akin to platePlan.par
+_main_platedata = fp_plateplans(_plateruns_with_platedata)
 
 
 def replace_space(val):
@@ -164,7 +169,7 @@ class Field:
         self.name = fieldname
         self.designID = design_id
         self._pd_indx = self._indx_in_platedata()
-        self._pdata = main_platedata[self._pd_indx] # row for field
+        self._pdata = _main_platedata[self._pd_indx] # row for field
         # Get designID if not specified, IF specified, just recopy
         self.designID = self._fetch_designID()
         self.epoch = self._get_epoch()
@@ -190,13 +195,13 @@ class Field:
 
     def _indx_in_platedata(self):
         # initial index
-        indx = main_platedata.loc_indices[self.name]
+        indx = _main_platedata.loc_indices[self.name]
         if isinstance(indx, list):  # multiple indices
             # better have DesignID then
             try:
                 # Five plates MAY have multiple lines in plate_data that correspond
                 # to EXACT SAME design. Need to be flexible here.
-                indx = main_platedata.loc_indices['designid', self.designID]
+                indx = _main_platedata.loc_indices['designid', self.designID]
                 if isinstance(indx, list):  # multiple lines, one design
                     indx = indx[0]
                 return indx
