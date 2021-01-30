@@ -4,22 +4,27 @@ from .util import paths
 from astropy.table import Table, vstack
 
 
-plateruns = list(_fp_available)
-platedata_paths = [paths.fp_platedata(prun) for prun in plateruns]
+# plateruns are all plateruns that are availble with platedata files.
+# see fiveplates module for call
 
-prun_to_path = dict(zip(plateruns, platedata_paths))
 
-pruns_to_parse_path = dict(filter(lambda prun_path: prun_path[1], prun_to_path.items()))
-pruns_to_parse = list(pruns_to_parse_path.keys())
+def fp_plateplans(plateruns):
+    platedata_paths = [paths.fp_platedata(prun) for prun in plateruns]
 
-platedata_tables = [io.load_fp_platedata(prun) for prun
-                    in pruns_to_parse]
+    prun_to_path = dict(zip(plateruns, platedata_paths))
 
-platedata_tables = list(filter(None, platedata_tables))
+    pruns_to_parse_path = dict(filter(lambda prun_path: prun_path[1], prun_to_path.items()))
+    pruns_to_parse = list(pruns_to_parse_path.keys())
 
-main_platedata = vstack(platedata_tables)
-main_platedata.add_index('fieldname')
-main_platedata.add_index('designid')
+    platedata_tables = [io.load_fp_platedata(prun) for prun
+                        in pruns_to_parse]
+
+    platedata_tables = list(filter(None, platedata_tables))
+
+    main_platedata = vstack(platedata_tables)
+    main_platedata.add_index('fieldname')
+    main_platedata.add_index('designid')
+    return main_platedata
 
 
 
