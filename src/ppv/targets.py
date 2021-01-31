@@ -58,6 +58,7 @@ class Targets:
         self._assigned_indx = {}
         self._input_indx = {}
         self._clean_indx = {}
+        # All indx dictionaries will now have keys of tuple (field.name, platerun.name)
 
     def __repr__(self):
         return f'Targets: {self.catalogid!r}'
@@ -113,12 +114,13 @@ class Targets:
         if isinstance(FieldorPlate, groups.Platerun):
             print(f'{FieldorPlate} appears to be a platerun. Use available_in_platerun method instead.')
             return
-        indx = self._available_indx.get(FieldorPlate.name,
+        lookup_key =-(FieldorPlate.name, FieldorPlate.platerun)
+        indx = self._available_indx.get(lookup_key,
                                         self._radial_search(FieldorPlate.center,
                                                             FieldorPlate._radius)
                                         )
         if FieldorPlate.name not in self._available_indx:
-            self._available_indx[FieldorPlate.name] = indx
+            self._available_indx[lookup_key] = indx
         return indx
 
     def _available_in_platerun(self, platerun_):
@@ -154,12 +156,16 @@ class Targets:
         representing if each Target member was assigned a fiber according
         to catalogID.
         """
-        indx_key = (pl_field_plrun.name, table)
+        if (isinstance(pl_field_plrun, groups.Platerun) |
+            isinstance(pl_field_plrun, fiveplates.Platerun)):
+            lookup_key = (pl_field_plrun.name, table)
+        else:
+            lookup_key = (pl_field_plrun.name, pl_field_plrun.platerun, table)
         _lookin_table = getattr(pl_field_plrun, table)
-        indx = self._assigned_indx.get(indx_key,
+        indx = self._assigned_indx.get(lookup_key,
                                        self._within(_lookin_table['catalogid']))
-        if indx_key not in self._assigned_indx:
-            self._assigned_indx[indx_key] = indx
+        if lookup_key not in self._assigned_indx:
+            self._assigned_indx[lookup_key] = indx
         return indx
 
     def assigned_info(self, pl_field_plrun):
