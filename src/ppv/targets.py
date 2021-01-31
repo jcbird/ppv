@@ -114,7 +114,7 @@ class Targets:
         if isinstance(FieldorPlate, groups.Platerun):
             print(f'{FieldorPlate} appears to be a platerun. Use available_in_platerun method instead.')
             return
-        lookup_key =-(FieldorPlate.name, FieldorPlate.platerun)
+        lookup_key =(FieldorPlate.name, FieldorPlate.platerun)
         indx = self._available_indx.get(lookup_key,
                                         self._radial_search(FieldorPlate.center,
                                                             FieldorPlate._radius)
