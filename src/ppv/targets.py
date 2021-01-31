@@ -182,8 +182,5 @@ class Targets:
         representing target members that were available and were NOT assigned a fiber.
         """
         assigned_ = self.assigned_in(pl_field_plrun)
-        try:
-            available_ = self.available_in_platerun(pl_field_plrun)
-        except (AttributeError, KeyError) as error:
-            available_ = self.available_in(pl_field_plrun)
+        available_ = self.available_in_platerun(pl_field_plrun)
         return available_ & ~assigned_
