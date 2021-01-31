@@ -5,6 +5,7 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.table import vstack, Column
+from copy import copy
 
 
 def available_plateruns():
@@ -103,7 +104,7 @@ class Field:
             return self._science_targets
         except AttributeError:
             _tmp = self._load_table()
-            self._science_targets = _tmp[_tmp['tarettype'] == 'science']
+            self._science_targets = _tmp[_tmp['targettype'] == 'science']
             return self._science_targets
 
     def _load_table(self):
@@ -113,7 +114,7 @@ class Field:
         make Plateruns much easier to implement.
         """
 
-        table = vstack([pl.targets for pl in self.plates])
+        table = copy(vstack([pl.targets for pl in self.plates]))
         N_targets = len(table)
         field_column = Column(data=[self.name] * N_targets,
                               name='field',
