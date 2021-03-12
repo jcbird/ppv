@@ -84,6 +84,7 @@ class Plate():
         self.ra, self.dec = self._center()
         self._radius = 1.49 * u.degree  # assuming APO
         self._epoch = self._get_epoch()
+        self.designID = self.property('designid')
         self.center = SkyCoord(self.ra * u.degree, self.dec * u.degree,
                                obstime=Time(self._epoch, format='decimalyear'))
 
