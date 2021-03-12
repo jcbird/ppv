@@ -119,7 +119,7 @@ class Targets:
                                         self._radial_search(FieldorPlate.center,
                                                             FieldorPlate._radius)
                                         )
-        if FieldorPlate.name not in self._available_indx:
+        if lookup_key not in self._available_indx:
             self._available_indx[lookup_key] = indx
         return indx
 
